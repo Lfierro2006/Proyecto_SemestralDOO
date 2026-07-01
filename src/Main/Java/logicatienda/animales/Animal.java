@@ -50,7 +50,7 @@ public abstract class Animal {
         this.estadisticas.put(estadistica, nivelValidado);
     }
 
-    private int getNivel(Estadistica estadistica){
+    public int getNivel(Estadistica estadistica){
         return this.estadisticas.getOrDefault(estadistica, VAL_INICIO);
     }
 
@@ -97,12 +97,12 @@ public abstract class Animal {
         }
     }
     //puede servir más adelante
-    /*public boolean[] getTodosLosEstados() {
+    public boolean[] getTodosLosEstados() {
         return new boolean[]{
                 getEstadoStat(Estadistica.FELICIDAD),
                 getEstadoStat(Estadistica.SACIEDAD),
                 getEstadoStat(Estadistica.HIGIENE),
                 getEstadoStat(Estadistica.SALUD)
         };
-    }*/
+    }
 }
