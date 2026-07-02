@@ -13,7 +13,7 @@ public class ventanaTiendaMain extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(null);
-        int alto = height/5;
+        int alto = height/5-6;
         int ancho = width/8;
         //Considere usar un for, pero considere que tardaba menos haciendolo a mano que pensando en como hacer la forma de "L" en un ciclo for
         CasillaMascota casilla1 = new CasillaMascota(0 ,0, ancho, alto, null );
