@@ -36,6 +36,20 @@ public class CasillaMascota extends PanelTMAnimal{
         btnLimpiar = new JButton("Limpiar Habitat", cargarImagen("limpiar.png", 30, 30));
         btnJugar = new JButton("Jugar", cargarImagen("jugar.png", 30, 30 ));
 
+        java.awt.event.MouseAdapter detectorClicDerecho = new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Si el clic que recibió el botón fue el derecho...
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    ocultarBotones(); //
+                }
+            }
+        };
+        btnMedicina.addMouseListener(detectorClicDerecho);
+        btnAlimentar.addMouseListener(detectorClicDerecho);
+        btnLimpiar.addMouseListener(detectorClicDerecho);
+        btnJugar.addMouseListener(detectorClicDerecho);
+
         btnMedicina.addActionListener(e -> {mascota.Curar(40); ocultarBotones();});
         btnAlimentar.addActionListener(e -> {mascota.Alimentar(40); ocultarBotones();});
         btnLimpiar.addActionListener(e -> {mascota.Limpiar(); ocultarBotones();});
@@ -104,17 +118,20 @@ public class CasillaMascota extends PanelTMAnimal{
     public boolean estaVacia() {
         return this.mascota == null;
     }
-    //me preocupo despues
+
     @Override
     public void ejecutarAccion(MouseEvent e) {
-        if (estaVacia()) {
-
-        } else {
-            // Si tiene animal: Izquierdo = Menú, Derecho = Ocultar
+        if (estaVacia()) { //debo dejar este if vacio despues
             if (SwingUtilities.isLeftMouseButton(e)) {
                 mostrarBotones();
-            } else if (SwingUtilities.isRightMouseButton(e)) {
-                ocultarBotones();
+            } else  { //
+
+            }
+        } else {
+            // Si tiene animal: Izquierdo = Menú
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                mostrarBotones();
+            } else {
             }
         }
     }
