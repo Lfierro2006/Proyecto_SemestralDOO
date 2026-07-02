@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class PanelTMAnimal extends JPanel {
-    private int CAncho = getWidth() /8; //Ancho de Casilla
-    private int CAlto = getHeight()/5; //Alto de Casilla
+public abstract class PanelTMAnimal extends JPanel {
+    private int CAncho ; //Ancho de Casilla
+    private int CAlto; //Alto de Casilla
 
     public PanelTMAnimal(int x, int y, int CAncho, int CAlto, String mensajeTooltip){
         this.CAlto=CAlto;
@@ -18,12 +18,23 @@ public class PanelTMAnimal extends JPanel {
         this.setToolTipText(mensajeTooltip);
 
         this.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent e){
-                ejecutarAccion();
+
+                ejecutarAccion(e);
             }
         });
     }
-    public void ejecutarAccion(){
 
+    public int getCAlto() {
+        return CAlto;
     }
+
+    public int getCAncho() {
+        return CAncho;
+    }
+
+    public abstract void ejecutarAccion(MouseEvent e);
+
+
 }
