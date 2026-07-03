@@ -61,6 +61,7 @@ public abstract class Animal {
     private void setNivel(Estadistica estadistica, int nivel){
         int nivelValidado = Math.max(MIN, Math.min(MAX, nivel));
         this.estadisticas.put(estadistica, nivelValidado);
+        this.actualizarEstados();
     }
 
     public int getNivel(Estadistica estadistica){
@@ -123,18 +124,10 @@ public abstract class Animal {
     }
 
 
-    private boolean getEstadoStat(Estadistica estadistica) {
-        int valor = this.getNivel(estadistica);
-        switch(estadistica) {
-            case FELICIDAD: return valor >= FELICIDAD_MIN;  // 60
-            case SACIEDAD:  return valor >= SACIEDAD_MIN;   // 60
-            case HIGIENE:   return valor >= HIGIENE_MIN;    // 55
-            case SALUD:     return valor >= SALUD_MIN;      // 65
-            default: return false;
-        }
+
+    public List<EstadoAnimal> getEstados(){
+        return this.estadosActuales;
     }
-    //puede servir más adelante
-    public boolean[] getTodosLosEstados() {
 
     public boolean tieneEstado(EstadoAnimal.Tipo tipo){
         for (EstadoAnimal estado : this.estadosActuales){
@@ -145,11 +138,46 @@ public abstract class Animal {
         return false;
     }
 
+    private void actualizarEstados(){
+        this.estadosActuales.clear();
+
+        if (this.getNivel(Estadistica.FELICIDAD) >= FELICIDAD_MIN){
+            this.estadosActuales.add(new Feliz());
+        } else {
+            this.estadosActuales.add(new Triste());
+        }
+
+        if (this.getNivel(Estadistica.SACIEDAD) >= SACIEDAD_MIN){
+            this.estadosActuales.add(new Saciado());
+        } else {
+            this.estadosActuales.add(new Hambriento());
+        }
+
+        if (this.getNivel(Estadistica.HIGIENE) >= HIGIENE_MIN){
+            this.estadosActuales.add(new Limpio());
+        } else {
+            this.estadosActuales.add(new Sucio());
+        }
+
+        if (this.getNivel(Estadistica.SALUD) >= SALUD_MIN){
+            this.estadosActuales.add(new Sano());
+        } else {
+            this.estadosActuales.add(new Enfermo());
+        }
+    }
+
+    public void ejecutarEstado(){
+        for (EstadoAnimal estado : this.estadosActuales){
+            estado.ejecutar(this);
+        }
+    }
+
+    public boolean[] getTodosLosEstados(){
         return new boolean[]{
-                getEstadoStat(Estadistica.FELICIDAD),
-                getEstadoStat(Estadistica.SACIEDAD),
-                getEstadoStat(Estadistica.HIGIENE),
-                getEstadoStat(Estadistica.SALUD)
+                this.tieneEstado(EstadoAnimal.Tipo.FELIZ),
+                this.tieneEstado(EstadoAnimal.Tipo.SACIADO),
+                this.tieneEstado(EstadoAnimal.Tipo.LIMPIO),
+                this.tieneEstado(EstadoAnimal.Tipo.SANO)
         };
     }
 }
