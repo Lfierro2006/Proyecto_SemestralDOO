@@ -2,6 +2,10 @@ package logicatienda.animales;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import logicatienda.animales.estados.EstadoAnimal;
+import logicatienda.animales.estados.*;
 
 public abstract class Animal {
     public static final int FELICIDAD_MIN=60;
@@ -12,7 +16,8 @@ public abstract class Animal {
     public static final int MIN=0;
     public static final int VAL_INICIO=85;
 
-    protected final String nombre;
+    private List<EstadoAnimal> estadosActuales;
+    private final String nombre;
     protected Map<Estadistica, Integer> estadisticas;
     public enum Estadistica {
         FELICIDAD(0),
@@ -34,12 +39,20 @@ public abstract class Animal {
     public Animal(String nombre){
         this.nombre=nombre;
         this.estadisticas = new HashMap<>();
+        this.estadosActuales = new ArrayList<>();
 
         this.estadisticas.put(Estadistica.FELICIDAD,VAL_INICIO);
         this.estadisticas.put(Estadistica.SACIEDAD, VAL_INICIO);
         this.estadisticas.put(Estadistica.HIGIENE, VAL_INICIO);
         this.estadisticas.put(Estadistica.SALUD,VAL_INICIO );
+
+        this.estadosActuales.add(new logicatienda.animales.estados.Feliz());   // índice 0
+        this.estadosActuales.add(new logicatienda.animales.estados.Saciado()); // índice 1
+        this.estadosActuales.add(new logicatienda.animales.estados.Limpio());  // índice 2
+        this.estadosActuales.add(new logicatienda.animales.estados.Sano());    // índice 3
     }
+
+
 
     public String getNombre(){
         return this.nombre;
