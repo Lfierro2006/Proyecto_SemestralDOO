@@ -68,11 +68,11 @@ public abstract class Animal {
         return this.estadisticas.getOrDefault(estadistica, VAL_INICIO);
     }
 
-    private void aumentarNivel(Estadistica estadistica, int cantidad){
+    public void aumentarNivel(Estadistica estadistica, int cantidad){
         this.setNivel(estadistica, this.getNivel(estadistica) + cantidad);
     }
 
-    private void disminuirNivel(Estadistica estadistica, int cantidad) {
+    public void disminuirNivel(Estadistica estadistica, int cantidad) {
         this.setNivel(estadistica, this.getNivel(estadistica) - cantidad);
     }
 
