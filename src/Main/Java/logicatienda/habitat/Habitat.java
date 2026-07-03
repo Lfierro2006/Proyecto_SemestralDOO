@@ -1,15 +1,39 @@
 package logicatienda.habitat;
 
+import logicatienda.animales.Animal;
+
 public abstract class Habitat {
 
     protected int nivelLimpieza;
+    protected Animal residente;
 
     public Habitat() {
         this.nivelLimpieza = 100;
+        this.residente = null;
     }
 
     public int getNivelLimpieza() {
         return nivelLimpieza;
+    }
+
+    public Animal getResidente() {
+        return this.residente;
+    }
+
+    public boolean estaVacio() {
+        return this.residente == null;
+    }
+
+    public boolean alojarAnimal(Animal nuevaMascota) {
+        if (this.estaVacio()) {
+            this.residente = nuevaMascota;
+            return true;
+        }
+        return false;
+    }
+
+    public void liberarHabitat() {
+        this.residente = null;
     }
 
     public void ensuciar(int cantidad) {

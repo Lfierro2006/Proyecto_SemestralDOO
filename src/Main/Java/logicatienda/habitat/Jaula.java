@@ -2,9 +2,7 @@ package logicatienda.habitat;
 
 public class Jaula extends Habitat {
 
-    public Jaula() {
-        super();
-    }
+    public Jaula() { super(); }
 
     @Override
     public void limpiarHabitat() {
