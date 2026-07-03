@@ -78,22 +78,46 @@ public abstract class Animal {
 
 
     public void Alimentar(int cantidad){
-        this.aumentarNivel(Estadistica.SACIEDAD,cantidad);
-        this.aumentarNivel(Estadistica.FELICIDAD,10);
+        if (!this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)) {
+            return;
+        }
+        int hambre = this.getNivel(Estadistica.SACIEDAD);
+        int bonus = (SACIEDAD_MIN-hambre)/3;
+
+        this.aumentarNivel(Estadistica.SACIEDAD, cantidad + bonus);
+        this.aumentarNivel(Estadistica.FELICIDAD, 10);
     }
 
     public void Jugar(){
-        this.aumentarNivel(Estadistica.FELICIDAD,40);
+        if (this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)||this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)){
+            return;
+        }
+        int felicidad = this.getNivel(Estadistica.SACIEDAD);
+        int bonus = (FELICIDAD_MIN-felicidad)/3;
+
+        this.aumentarNivel(Estadistica.FELICIDAD,40+bonus);
         this.disminuirNivel(Estadistica.SACIEDAD,10);
         this.disminuirNivel(Estadistica.HIGIENE,15);
     }
 
     public void Limpiar(){
-        this.aumentarNivel(Estadistica.HIGIENE,40);
+        if (!this.tieneEstado(EstadoAnimal.Tipo.SUCIO)) {
+            return;
+        }
+        int higiene=this.getNivel(Estadistica.HIGIENE);
+        int bonus = (HIGIENE_MIN-higiene)/3;
+
+        this.aumentarNivel(Estadistica.HIGIENE,40+bonus);
         this.aumentarNivel(Estadistica.SALUD,10);
     }
 
     public void Curar(int cantidad){
+        if (!this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)) {
+            return;
+        }
+        int salud=this.getNivel(Estadistica.SALUD);
+        int bonus=(salud-SALUD_MIN)/4;
+
         this.aumentarNivel(Estadistica.SALUD,cantidad);
         this.disminuirNivel(Estadistica.FELICIDAD,5);
     }
@@ -111,6 +135,16 @@ public abstract class Animal {
     }
     //puede servir más adelante
     public boolean[] getTodosLosEstados() {
+
+    public boolean tieneEstado(EstadoAnimal.Tipo tipo){
+        for (EstadoAnimal estado : this.estadosActuales){
+            if (estado.getTipo() == tipo) {
+                return true;
+            }
+        }
+        return false;
+    }
+
         return new boolean[]{
                 getEstadoStat(Estadistica.FELICIDAD),
                 getEstadoStat(Estadistica.SACIEDAD),
