@@ -1,11 +1,12 @@
 package logicagrafica;
 import logicatienda.animales.*;
+import logicatienda.observers.AnimalObserver;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class CasillaMascota extends PanelTMAnimal{
+public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private Animal mascota;
     private JButton btnMedicina;
     private JButton btnAlimentar;
@@ -22,6 +23,10 @@ public class CasillaMascota extends PanelTMAnimal{
     public CasillaMascota(int x, int y, int ancho, int alto, Animal mascota){
         super(x,y,ancho,alto, "");
         this.mascota=mascota;
+
+        if (mascota != null) {
+            this.mascota.addObserver(this);
+        }
 
         alertaEnfermo= cargarImagen("alertaSal.png",15,15);
         alertaHambre= cargarImagen("alertaHam.png",15,15);
@@ -177,6 +182,21 @@ public class CasillaMascota extends PanelTMAnimal{
 
 
             }
+        }
+    }
+    @Override
+    public void onEstadisticasCambiadas(Animal animal) {
+        this.repaint();
+    }
+
+    @Override
+    public void onEstadoCambiado(Animal animal) {
+        this.repaint();
+    }
+
+    public void removerObserver() {
+        if (this.mascota != null) {
+            this.mascota.removeObserver(this);
         }
     }
 }
