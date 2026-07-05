@@ -4,8 +4,13 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import logicatienda.animales.estados.EstadoAnimal;
 import logicatienda.animales.estados.*;
+import logicatienda.observers.AnimalObserver;
+
+/**
+ * Clase abstracta que representa a un animal en la tienda.
+ * Implementa los patrones State y Observer para manejar estados y notificaciones.
+ */
 
 public abstract class Animal {
     public static final int FELICIDAD_MIN=60;
@@ -17,8 +22,14 @@ public abstract class Animal {
     public static final int VAL_INICIO=85;
 
     private List<EstadoAnimal> estadosActuales;
+    private List<AnimalObserver> observers = new ArrayList<>();
     private final String nombre;
     protected Map<Estadistica, Integer> estadisticas;
+
+    /**
+     * Enum que define las estadísticas de un animal.
+     * Cada estadística tiene un índice para acceso rápido.
+     */
     public enum Estadistica {
         FELICIDAD(0),
         SACIEDAD(1),
@@ -26,6 +37,10 @@ public abstract class Animal {
         SALUD(3);
         private final int indice;
 
+        /**
+         * Obtiene el índice de la estadística.
+         * @return El índice numérico
+         */
         private Estadistica(int indice){
             this.indice=indice;
         }
@@ -36,6 +51,12 @@ public abstract class Animal {
 
     }
 
+    /**
+     * Constructor de Animal.
+     * Inicializa todas las estadísticas al valor inicial y los estados positivos.
+     *
+     * @param nombre El nombre del animal
+     */
     public Animal(String nombre){
         this.nombre=nombre;
         this.estadisticas = new HashMap<>();
@@ -52,32 +73,60 @@ public abstract class Animal {
         this.estadosActuales.add(new logicatienda.animales.estados.Sano());    // índice 3
     }
 
-
-
+    /**
+     * Obtiene el nombre del animal.
+     * @return El nombre
+     */
     public String getNombre(){
         return this.nombre;
     }
 
+    /**
+     * Establece el nivel de una estadística validando que esté entre 0 y 100.
+     * Actualiza los estados y notifica a los observers.
+     * @param estadistica La estadística a modificar
+     * @param nivel El nuevo nivel
+     */
     private void setNivel(Estadistica estadistica, int nivel){
         int nivelValidado = Math.max(MIN, Math.min(MAX, nivel));
         this.estadisticas.put(estadistica, nivelValidado);
         this.actualizarEstados();
+        this.notificarObservers();
     }
 
+    /**
+     * Obtiene el nivel actual de una estadística.
+     * @param estadistica La estadística a consultar
+     * @return El nivel actual
+     */
     public int getNivel(Estadistica estadistica){
         return this.estadisticas.getOrDefault(estadistica, VAL_INICIO);
     }
 
+    /**
+     * Aumenta el nivel de una estadística.
+     * @param estadistica La estadística a aumentar
+     * @param cantidad La cantidad a aumentar
+     */
     public void aumentarNivel(Estadistica estadistica, int cantidad){
         this.setNivel(estadistica, this.getNivel(estadistica) + cantidad);
     }
 
+    /**
+     * Disminuye el nivel de una estadística.
+     * @param estadistica La estadística a disminuir
+     * @param cantidad La cantidad a disminuir
+     */
     public void disminuirNivel(Estadistica estadistica, int cantidad) {
         this.setNivel(estadistica, this.getNivel(estadistica) - cantidad);
     }
 
 
-
+    /**
+     * Alimenta al animal. Solo funciona si está hambriento.
+     * Aplica un bonus adicional según el déficit de saciedad.
+     * @param cantidad La cantidad de comida a dar
+     */
     public void Alimentar(int cantidad){
         if (!this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)) {
             return;
@@ -89,6 +138,10 @@ public abstract class Animal {
         this.aumentarNivel(Estadistica.FELICIDAD, 10);
     }
 
+    /**
+     * jugar al animal. Solo funciona si no está enfermo ni hambriento.
+     * Aplica un bonus adicional según el déficit de felicidad.
+     */
     public void Jugar(){
         if (this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)||this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)){
             return;
@@ -101,6 +154,10 @@ public abstract class Animal {
         this.disminuirNivel(Estadistica.HIGIENE,15);
     }
 
+    /**
+     * Limpia al animal. Solo funciona si está sucio.
+     * Aplica un bonus adicional según el déficit de higiene.
+     */
     public void Limpiar(){
         if (!this.tieneEstado(EstadoAnimal.Tipo.SUCIO)) {
             return;
@@ -112,23 +169,37 @@ public abstract class Animal {
         this.aumentarNivel(Estadistica.SALUD,10);
     }
 
+    /**
+     * Cura al animal. Solo funciona si está enfermo.
+     * Aplica un bonus adicional según el déficit de salud.
+     *
+     * @param cantidad La cantidad de medicina a aplicar
+     */
     public void Curar(int cantidad){
         if (!this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)) {
             return;
         }
         int salud=this.getNivel(Estadistica.SALUD);
-        int bonus=(salud-SALUD_MIN)/4;
+        int bonus=(SALUD_MIN-salud)/4;
 
-        this.aumentarNivel(Estadistica.SALUD,cantidad);
+        this.aumentarNivel(Estadistica.SALUD,cantidad+bonus);
         this.disminuirNivel(Estadistica.FELICIDAD,5);
     }
 
 
-
+    /**
+     * Obtiene la lista de estados actuales del animal.
+     * @return Lista de estados
+     */
     public List<EstadoAnimal> getEstados(){
         return this.estadosActuales;
     }
 
+    /**
+     * Verifica si el animal tiene un estado específico.
+     * @param tipo El tipo de estado a verificar
+     * @return true si tiene el estado, false en caso contrario
+     */
     public boolean tieneEstado(EstadoAnimal.Tipo tipo){
         for (EstadoAnimal estado : this.estadosActuales){
             if (estado.getTipo() == tipo) {
@@ -138,6 +209,10 @@ public abstract class Animal {
         return false;
     }
 
+    /**
+     * Actualiza la lista de estados según los niveles actuales de estadísticas.
+     * Notifica a los observers del cambio.
+     */
     private void actualizarEstados(){
         this.estadosActuales.clear();
 
@@ -164,14 +239,24 @@ public abstract class Animal {
         } else {
             this.estadosActuales.add(new Enfermo());
         }
+        this.notificarObservers();
     }
 
+    /**
+     * Ejecuta el comportamiento de todos los estados actuales del animal.
+     * Cada estado aplica su efecto sobre las estadísticas.
+     */
     public void ejecutarEstado(){
         for (EstadoAnimal estado : this.estadosActuales){
             estado.ejecutar(this);
         }
     }
 
+    /**
+     * Obtiene un array de booleanos con el estado positivo de cada estadística.
+     * Orden: [FELIZ, SACIADO, LIMPIO, SANO]
+     * @return Array de 4 booleanos
+     */
     public boolean[] getTodosLosEstados(){
         return new boolean[]{
                 this.tieneEstado(EstadoAnimal.Tipo.FELIZ),
@@ -179,5 +264,39 @@ public abstract class Animal {
                 this.tieneEstado(EstadoAnimal.Tipo.LIMPIO),
                 this.tieneEstado(EstadoAnimal.Tipo.SANO)
         };
+    }
+
+    /**
+     * Registra un observer para recibir notificaciones de cambios.
+     * @param observer El observer a registrar
+     */
+    public void addObserver(AnimalObserver observer) {
+        this.observers.add(observer);
+    }
+
+    /**
+     * Elimina un observer registrado.
+     * @param observer El observer a eliminar
+     */
+    public void removeObserver(AnimalObserver observer) {
+        this.observers.remove(observer);
+    }
+
+    /**
+     * Notifica a todos los observers que las estadísticas han cambiado.
+     */
+    private void notificarObservers() {
+        for (AnimalObserver observer : this.observers) {
+            observer.onEstadisticasCambiadas(this);
+        }
+    }
+
+    /**
+     * Notifica a todos los observers que el estado ha cambiado.
+     */
+    private void notificarCambioEstado() {
+        for (AnimalObserver observer : this.observers) {
+            observer.onEstadoCambiado(this);
+        }
     }
 }
