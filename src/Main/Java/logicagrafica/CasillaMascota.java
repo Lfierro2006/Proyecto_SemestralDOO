@@ -1,13 +1,14 @@
 package logicagrafica;
 import logicatienda.animales.*;
 import logicatienda.observers.AnimalObserver;
-
+import logicatienda.habitat.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
-    private Animal mascota;
+    private Habitat habitat;
+
     private JButton btnMedicina;
     private JButton btnAlimentar;
     private JButton btnLimpiar;
@@ -16,15 +17,15 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private ImageIcon alertaSucio;
     private ImageIcon alertaTriste;
     private ImageIcon alertaEnfermo;
-
+    private Animal mascota;
 
     private boolean mostrandoMenu = false;
 
-    public CasillaMascota(int x, int y, int ancho, int alto, Animal mascota){
+    public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat){
         super(x,y,ancho,alto, "");
-        this.mascota=mascota;
-
-        if (mascota != null) {
+        this.habitat=habitat;
+        this.mascota= habitat.getResidente();
+        if (this.habitat != null && !this.habitat.estaVacio()) {
             this.mascota.addObserver(this);
         }
 
@@ -123,31 +124,47 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     public boolean estaVacia() {
         return this.mascota == null;
     }
+    public boolean noTieneHabitat() {
+        return this.habitat == null;
+    }
 
+    public boolean tieneAnimal() {
+        return this.habitat != null && !this.habitat.estaVacio();
+    }
     @Override
     public void ejecutarAccion(MouseEvent e) {
-        if (estaVacia()) { //debo dejar este if vacio despues
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                mostrarBotones();
-            } else  { //
+
+        if (SwingUtilities.isRightMouseButton(e)) {
+                ocultarBotones();
+                return;
+            }
+
+
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            if (noTieneHabitat()){
+                //opcion de botones para comprar habitat
 
             }
-        } else {
-            // Si tiene animal: Izquierdo = Menú
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                mostrarBotones();
-            } else {
+            else if (this.habitat.estaVacio()){ //HAY HABITAT PERO NO HAY ANIMAL
+
             }
         }
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (noTieneHabitat()) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawString("[VACIO]", 10, 20);
 
-        if (estaVacia()) {
+        }
+        else if (habitat.estaVacio()) {
             g.setColor(Color.GRAY);
-            g.drawString("[Vacío]", 10, 20);
+            g.drawString("Hábitat: " + habitat.getClass().getSimpleName(), 10, 20);
+            g.drawString("[Esperando Mascota]", 10, 40);
+
         } else if (!mostrandoMenu) {
             g.setColor(Color.BLACK);
             g.drawString(mascota.getNombre(), 10, 20);
