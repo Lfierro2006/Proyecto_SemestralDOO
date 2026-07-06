@@ -57,7 +57,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnJugar.addMouseListener(detectorClicDerecho);
 
         btnMedicina.addActionListener(e -> {mascota.Curar(40); ocultarBotones();});
-        btnAlimentar.addActionListener(e -> {mascota.Alimentar(40); ocultarBotones();});
+        btnAlimentar.addActionListener(e -> {mascota.Alimentar(); ocultarBotones();});
         btnLimpiar.addActionListener(e -> {mascota.Limpiar(); ocultarBotones();});
         btnJugar.addActionListener(e -> {mascota.Jugar(); ocultarBotones();});
         this.add(btnMedicina);

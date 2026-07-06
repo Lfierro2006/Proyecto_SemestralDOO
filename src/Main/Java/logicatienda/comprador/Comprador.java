@@ -6,18 +6,18 @@ import logicatienda.animales.estados.EstadoAnimal;
 public class Comprador {
 
     private final String tipoMascotaDeseada;
-    private final double presupuestoMaximo;
+    private final int presupuestoMaximo;
 
-    public Comprador(String tipoMascotaDeseada, double presupuestoMaximo) {
+    public Comprador(String tipoMascotaDeseada, int presupuestoMaximo) {
         this.tipoMascotaDeseada = tipoMascotaDeseada;
         this.presupuestoMaximo = presupuestoMaximo;
     }
 
-    public double getPresupuestoMaximo() {
+    public int getPresupuestoMaximo() {
         return presupuestoMaximo;
     }
 
-    public boolean quiereComprar(Animal mascota, double precioVenta) {
+    public boolean quiereComprar(Animal mascota, int precioVenta) {
         if (this.presupuestoMaximo < precioVenta) {
             System.out.println("El cliente no tiene suficiente dinero.");
             return false;

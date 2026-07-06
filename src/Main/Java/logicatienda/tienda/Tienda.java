@@ -8,16 +8,16 @@ import logicatienda.comprador.Comprador;
 
 public class Tienda {
 
-    private double presupuesto;
+    private int presupuesto;
     private List<Habitat> espaciosActivos;
     public static final int CAPACIDAD_MAXIMA = 12;
 
-    public Tienda(double presupuestoInicial) {
+    public Tienda(int presupuestoInicial) {
         this.presupuesto = presupuestoInicial;
         this.espaciosActivos = new ArrayList<>();
     }
 
-    public double getPresupuesto() {
+    public int getPresupuesto() {
         return this.presupuesto;
     }
 
@@ -25,7 +25,7 @@ public class Tienda {
         return this.espaciosActivos;
     }
 
-    public boolean comprarHabitat(Habitat nuevoHabitat, double costo) {
+    public boolean comprarHabitat(Habitat nuevoHabitat, int costo) {
 
         if (this.espaciosActivos.size() >= CAPACIDAD_MAXIMA) {
             System.out.println("No hay más espacios libres en la tienda.");
@@ -44,7 +44,7 @@ public class Tienda {
         return true;
     }
 
-    public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, double costo) {
+    public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, int costo) {
 
         // 1. Validar que el hábitat seleccionado realmente pertenezca a la tienda
         if (!this.espaciosActivos.contains(destino)) {
@@ -68,7 +68,7 @@ public class Tienda {
         return true;
     }
 
-    public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente, double precioVenta) {
+    public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente, int precioVenta) {
 
         if (habitatOcupado.estaVacio()) {
             System.out.println("Error: No hay ningún animal en este recinto para vender.");

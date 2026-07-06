@@ -125,16 +125,15 @@ public abstract class Animal {
     /**
      * Alimenta al animal. Solo funciona si está hambriento.
      * Aplica un bonus adicional según el déficit de saciedad.
-     * @param cantidad La cantidad de comida a dar
      */
-    public void Alimentar(int cantidad){
+    public void Alimentar(){
         if (!this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)) {
             return;
         }
         int hambre = this.getNivel(Estadistica.SACIEDAD);
         int bonus = (SACIEDAD_MIN-hambre)/3;
 
-        this.aumentarNivel(Estadistica.SACIEDAD, cantidad + bonus);
+        this.aumentarNivel(Estadistica.SACIEDAD, 35 + bonus);
         this.aumentarNivel(Estadistica.FELICIDAD, 10);
     }
 
