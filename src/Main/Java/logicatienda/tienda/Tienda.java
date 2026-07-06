@@ -64,7 +64,7 @@ public class Tienda {
         this.presupuesto -= costo;
         destino.alojarAnimal(nuevaMascota);
 
-        System.out.println("El animal ha sido ccomprado corretamente.");
+        System.out.println("El animal ha sido comprado corretamente.");
         return true;
     }
 
