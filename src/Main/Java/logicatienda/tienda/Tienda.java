@@ -48,7 +48,6 @@ public class Tienda {
     }
     public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, int costo) {
 
-        // 1. Validar que el hábitat seleccionado realmente pertenezca a la tienda
         if (!this.espaciosActivos.contains(destino)) {
             System.out.println("Error: Ese recinto no pertenece a tu tienda.");
             return false;
@@ -66,11 +65,11 @@ public class Tienda {
         this.presupuesto -= costo;
         destino.alojarAnimal(nuevaMascota);
 
-        System.out.println("El animal ha sido comprado corretamente.");
+        System.out.println("El animal ha sido ccomprado corretamente.");
         return true;
     }
 
-    public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente, int precioVenta) {
+    public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente) {
 
         if (habitatOcupado.estaVacio()) {
             System.out.println("Error: No hay ningún animal en este recinto para vender.");
@@ -79,18 +78,18 @@ public class Tienda {
 
         Animal mascotaAVender = habitatOcupado.getResidente();
 
-        if (cliente.quiereComprar(mascotaAVender, precioVenta)) {
+        int precioFinalAcordado = cliente.calcularPrecioFinal(mascotaAVender);
 
-            this.presupuesto += precioVenta;
-
-            //Solo sacamos al animal.
-            // habitat físico se queda en la tienda, pero ahora está vacío.
+        if (precioFinalAcordado > 0){
+            this.presupuesto += precioFinalAcordado;
             habitatOcupado.liberarHabitat();
-
             System.out.println("Venta exitosa");
-            return true;
-        }
 
-        return false;
-    }
+                return true;
+            }
+
+            System.out.println("Venta cancelada");
+            return false;
+
+        }
 }
