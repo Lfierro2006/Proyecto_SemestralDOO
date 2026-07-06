@@ -43,7 +43,9 @@ public class Tienda {
         System.out.println("Nuevo recinto comprado.");
         return true;
     }
-
+    public void reembolso(int costo){
+        this.presupuesto+= costo;
+    }
     public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, int costo) {
 
         // 1. Validar que el hábitat seleccionado realmente pertenezca a la tienda
