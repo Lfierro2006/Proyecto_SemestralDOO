@@ -32,23 +32,23 @@ public interface EstadoAnimal {
      * Obtiene el tipo de estado.
      * @return El tipo de estado (FELIZ, TRISTE, etc.)
      */
-    Tipo getTipo();
+    public Tipo getTipo();
 
     /**
      * Indica si el animal puede jugar en este estado.
      * @return true si puede jugar, false en caso contrario
      */
-    boolean puedeJugar();
+    public boolean puedeJugar();
 
     /**
      * Indica si el animal puede ser curado en este estado.
      * @return true si puede ser curado, false en caso contrario
      */
-    boolean puedeCurar();
+    public boolean puedeCurar();
 
     /**
      * Indica si el animal puede ser limpiado en este estado.
      * @return true si puede ser limpiado, false en caso contrario
      */
-    boolean puedeLimpiar();
+    public boolean puedeLimpiar();
 }
