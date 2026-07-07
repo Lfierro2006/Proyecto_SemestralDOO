@@ -16,13 +16,19 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private ImageIcon alertaHambre, alertaSucio, alertaTriste, alertaEnfermo;
     private JButton btnBuyJaula, btnBuyCama, btnBuyPecera;
     // Animal mascota = habitat.getResidente();
+    private Runnable actualizarP;
     private JPanel panelMenu;
+    //  PRECIOS DE LOS HABITATS
+    private final int $Jaula = 200;
+    private final int $cama = 180;
+    private final int $Pecera = 190;
     private boolean mostrandoMenuAnimal = false;
     private boolean mostrandoMenuHabitat = false; //Menu para comprar habitats
-    public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda){
+    public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda, Runnable actualizarP){
         super(x,y,ancho,alto, "");
         this.habitat=habitat;
         this.tiendaLogica= tienda;
+        this.actualizarP=actualizarP;
         if (this.habitat != null && !this.habitat.estaVacio()) {
             this.habitat.getResidente().addObserver(this);
         }
@@ -64,9 +70,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnBuyPecera.addMouseListener(detectorClicDerecho);
         btnBuyCama.addMouseListener(detectorClicDerecho);
 
-        btnBuyJaula.addActionListener(e -> intentarComprarHabitat(new Jaula(), 100)); //LOS PRECIOS SON PLACEHOLDERS
-        btnBuyPecera.addActionListener(e -> intentarComprarHabitat(new Pecera(), 150));
-        btnBuyCama.addActionListener(e -> intentarComprarHabitat(new Cama(), 80));
+        btnBuyJaula.addActionListener(e -> intentarComprarHabitat(new Jaula(), $Jaula)); //LOS PRECIOS SON PLACEHOLDERS
+        btnBuyPecera.addActionListener(e -> intentarComprarHabitat(new Pecera(), $Pecera));
+        btnBuyCama.addActionListener(e -> intentarComprarHabitat(new Cama(), $cama));
 
         //BOTONES PARA INTERACTUAR CON EL ANIMAL DEL HABITAT YA PUESTO
         btnMedicina.addMouseListener(detectorClicDerecho);
@@ -109,6 +115,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         if (compraExitosa) {
             this.habitat = nuevoHabitat; // La casilla ahora es dueña de este hábitat
             System.out.println("Hábitat instalado en esta casilla.");
+            if (this.actualizarP != null) {
+                this.actualizarP.run();
+            }
         } else {
             System.out.println("No se pudo comprar el hábitat (falta dinero).");
 
@@ -122,7 +131,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         //Vaciar cualquier boton previo por si acaso
         panelMenu.removeAll();
         //formar las filas para los botones
-        panelMenu.setLayout(new GridLayout(3, 1, 0, 2));
+        panelMenu.setLayout(new GridLayout(3, 1, 0, 1));
         //Se añaden los botones
         panelMenu.add(btnBuyJaula);
         panelMenu.add(btnBuyPecera);
@@ -138,7 +147,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         panelMenu.removeAll();
 
-        panelMenu.setLayout(new GridLayout(4, 1, 0, 2));
+        panelMenu.setLayout(new GridLayout(4, 1, 0, 1));
 
         panelMenu.add(btnMedicina);
         panelMenu.add(btnAlimentar);
@@ -160,6 +169,20 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
 
+    private void desmantelarHabitat(){ //SOLO SE PUEDE USAR EN UN HABITAT VACIO
+        int valorReembolso = 0;
+        if (habitat instanceof Jaula) valorReembolso = $Jaula;
+        else if (habitat instanceof Pecera) valorReembolso= $Pecera;
+        else if (habitat instanceof Cama) valorReembolso= $cama;
+
+        tiendaLogica.reembolso(valorReembolso);
+        tiendaLogica.getEspaciosActivos().remove(habitat);
+        habitat=null;
+        if(actualizarP !=null)actualizarP.run();
+        System.out.println("Hábitat desmantelado desde la Casilla. Reembolso: $" + valorReembolso);
+        ocultarTodosLosBotones();
+    }
+
 
 
     public boolean noTieneHabitat() {
@@ -173,9 +196,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     public void ejecutarAccion(MouseEvent e) {
 
         if (SwingUtilities.isRightMouseButton(e)) {
-                ocultarTodosLosBotones();
-                return;
-            }
+            if(mostrandoMenuHabitat || mostrandoMenuAnimal) ocultarTodosLosBotones(); //OCULTAR BOTONES
+            else if (habitat != null && habitat.estaVacio()) desmantelarHabitat(); //REEMBOLSAR HABITAT
+            return;
+
+        }
 
 
         if (SwingUtilities.isLeftMouseButton(e)) {
