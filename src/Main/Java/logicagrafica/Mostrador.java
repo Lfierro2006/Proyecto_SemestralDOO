@@ -11,6 +11,7 @@ public class Mostrador extends JPanel {
 
     private JButton btnMonitor1;
     private JButton btnMonitor2;
+    private JButton btnMonitor3;
     private Tienda tiendaLogica;
     //DEBO AÑADIR LA FUNCIONALIDAD DE LOS BOTONES
     public Mostrador(int x, int y, int ancho, int alto, Tienda tienda){
@@ -24,14 +25,23 @@ public class Mostrador extends JPanel {
         this.bg = BG.getImage();
         btnMonitor1 = new JButton("COMPRAR MEDICINA     ", cargarImagen("darMed.png", 40,40));
         btnMonitor2 = new JButton("COMPRAR COMIDA        ", cargarImagen("darComida.png", 40,40));
+        btnMonitor3 = new JButton("COMPRAR ANIMALES    ", cargarImagen("perro.png", 30 ,30));
+
         btnMonitor1.setHorizontalAlignment(SwingConstants.LEFT);
         btnMonitor2.setHorizontalAlignment(SwingConstants.LEFT);
+        btnMonitor3.setHorizontalAlignment(SwingConstants.LEFT);
+
         btnMonitor1.setMargin(new Insets(2,0,2,0));
         btnMonitor2.setMargin(new Insets(2,2,2,0));
-        btnMonitor1.setBounds(AN+1,(int) (AL*1.69),(int) (AN*1.19), AL/4+10);
-        btnMonitor2.setBounds(AN+1,(int) (AL*1.99), (int) (AN*1.19), AL/4+10);
+        btnMonitor3.setMargin(new Insets(2,2,2,0));
+
+        btnMonitor1.setBounds(AN+1, (int) (AL*1.69), (int) (AN*1.19), AL/5);
+        btnMonitor2.setBounds(AN+1, (int) (AL*1.88), (int) (AN*1.19), AL/5);
+        btnMonitor3.setBounds(AN+1, (int) (AL*2.07), (int) (AN*1.19), AL/5);
+
         this.add(btnMonitor1);
         this.add(btnMonitor2);
+        this.add(btnMonitor3);
     }
     private ImageIcon cargarImagen(String nombreArchivo, int ancho, int alto){
         //Buscar la imagen
