@@ -46,9 +46,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
 
 
-        btnBuyJaula = new JButton("Jaula ($)", cargarImagen("Jaula.png", 40 , 40));
-        btnBuyPecera = new JButton("Pecera ($)", cargarImagen("pescera.png",40,40));
-        btnBuyCama = new JButton("Cama ($)", cargarImagen("cama.png", 40, 40));
+        btnBuyJaula = new JButton("Jaula ($200)", cargarImagen("Jaula.png", 40 , 40));
+        btnBuyPecera = new JButton("Pecera ($190)", cargarImagen("pescera.png",30,30));
+        btnBuyCama = new JButton("Cama ($180)", cargarImagen("cama.png", 40, 40));
 
         btnMedicina = new JButton("Dar Medicina", cargarImagen("darMed.png",30,30));
         btnAlimentar = new JButton("Alimentar", cargarImagen("darComida.png", 30, 30));
