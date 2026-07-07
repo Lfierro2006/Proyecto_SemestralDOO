@@ -14,6 +14,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private Tienda tiendaLogica;
     private JButton btnMedicina , btnAlimentar, btnLimpiar, btnJugar;
     private ImageIcon alertaHambre, alertaSucio, alertaTriste, alertaEnfermo;
+    private ImageIcon GCama, GJaula, GPecera, GPerro, GGato, GAve, GPez; //G de Grafico
     private JButton btnBuyJaula, btnBuyCama, btnBuyPecera;
     // Animal mascota = habitat.getResidente();
     private Runnable actualizarP;
@@ -32,6 +33,15 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         if (this.habitat != null && !this.habitat.estaVacio()) {
             this.habitat.getResidente().addObserver(this);
         }
+
+        GCama =cargarImagen("cama.png",160,160);
+        GPecera =cargarImagen("pescera.png",160,160);
+        GJaula = cargarImagen("Jaula.png",160,160);
+        GGato = cargarImagen("gato.png",100,100);
+        GPerro = cargarImagen("perro.png", 100,100);
+        GAve = cargarImagen("ave.png", 100,100);
+        GPez = cargarImagen("Pezp.png",100,100);
+
 
         alertaEnfermo= cargarImagen("alertaSal.png",15,15);
         alertaHambre= cargarImagen("alertaHam.png",15,15);
@@ -246,10 +256,15 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         }
         else if (habitat.estaVacio()) {
-            g.setColor(Color.GRAY);
-            g.drawString("Hábitat: " + habitat.getClass().getSimpleName(), 10, 20);
-            g.drawString("[Esperando Mascota]", 10, 40);
-
+            if (habitat instanceof Jaula){
+                g.drawImage(GJaula.getImage(), 0,0, getWidth(), getHeight(),null);
+            }
+            else if (habitat instanceof Cama){
+                g.drawImage(GCama.getImage(), 0,0, getWidth(), getHeight(),null);
+            }
+            else if (habitat instanceof Pecera){
+                g.drawImage(GPecera.getImage(), 0,0, getWidth(), getHeight(),null);
+            }
         } else if (!mostrandoMenuAnimal) {
             Animal mascota = habitat.getResidente();
             g.setColor(Color.BLACK);
@@ -302,5 +317,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         if (mascota != null) {
             mascota.removeObserver(this);
         }
+    }
+
+    public Habitat getHabitat() {
+        return habitat;
     }
 }
