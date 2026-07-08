@@ -10,7 +10,7 @@ public class Tienda {
 
     private int presupuesto;
     private List<Habitat> espaciosActivos;
-    public static final int CAPACIDAD_MAXIMA = 12;
+    public static final int CAPACIDAD_MAXIMA = 22;
 
     public Tienda(int presupuestoInicial) {
         this.presupuesto = presupuestoInicial;
