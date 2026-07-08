@@ -45,10 +45,6 @@ public class Tienda {
         return true;
     }
 
-    public void reembolso(int costo){
-        this.usuario.darDinero(costo);
-    }
-
     public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, int costo) {
 
         if (!this.espaciosActivos.contains(destino)) {
@@ -79,12 +75,18 @@ public class Tienda {
         this.usuario.quitarDinero(150);
         return true;
     }
+
     public boolean comprarComida(){
         if(this.usuario.getDinero()<200){
             return false;
         }
         this.usuario.quitarDinero(200);
         this.usuario.sumarItem(Item.COMIDA.getIndex());
+        return true;
+    }
+
+    public void reembolso(int costo){
+        this.usuario.darDinero(costo);
     }
 
     public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente) {
