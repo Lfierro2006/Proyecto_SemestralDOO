@@ -1,7 +1,7 @@
 package logicatienda.animales.estados;
 
 import logicatienda.animales.Animal;
-
+import logicatienda.animales.Estadistica;
 /**
  * Estado que representa a un animal sano.
  * La salud disminuye lentamente con el tiempo.
@@ -17,12 +17,12 @@ public class Sano implements EstadoAnimal {
      */
     @Override
     public void ejecutar(Animal animal) {
-        animal.disminuirNivel(Animal.Estadistica.SALUD, 3);
+        animal.disminuirNivel(Estadistica.SALUD, 3);
     }
 
     @Override
-    public EstadoAnimal.Tipo getTipo() {
-        return EstadoAnimal.Tipo.SANO;
+    public Tipo getTipo() {
+        return Tipo.SANO;
     }
 
     @Override

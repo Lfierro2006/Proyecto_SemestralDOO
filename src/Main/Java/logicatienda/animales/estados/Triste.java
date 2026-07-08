@@ -1,7 +1,7 @@
 package logicatienda.animales.estados;
 
 import logicatienda.animales.Animal;
-
+import logicatienda.animales.Estadistica;
 /**
  * Estado que representa a un animal triste.
  * La felicidad disminuye rápidamente con el tiempo.
@@ -17,12 +17,12 @@ public class Triste implements EstadoAnimal {
      */
     @Override
     public void ejecutar(Animal animal) {
-        animal.disminuirNivel(Animal.Estadistica.FELICIDAD, 4);
+        animal.disminuirNivel(Estadistica.FELICIDAD, 4);
     }
 
     @Override
-    public EstadoAnimal.Tipo getTipo() {
-        return EstadoAnimal.Tipo.TRISTE;
+    public Tipo getTipo() {
+        return Tipo.TRISTE;
     }
 
     @Override

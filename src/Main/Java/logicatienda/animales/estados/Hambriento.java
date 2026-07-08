@@ -1,6 +1,7 @@
 package logicatienda.animales.estados;
 
 import logicatienda.animales.Animal;
+import logicatienda.animales.Estadistica;
 
 /**
  * Estado que representa a un animal hambriento.
@@ -17,12 +18,12 @@ public class Hambriento implements EstadoAnimal {
      */
     @Override
     public void ejecutar(Animal animal) {
-        animal.disminuirNivel(Animal.Estadistica.SACIEDAD, 5);
+        animal.disminuirNivel(Estadistica.SACIEDAD, 5);
     }
 
     @Override
-    public EstadoAnimal.Tipo getTipo() {
-        return EstadoAnimal.Tipo.HAMBRIENTO;
+    public Tipo getTipo() {
+        return Tipo.HAMBRIENTO;
     }
 
     @Override

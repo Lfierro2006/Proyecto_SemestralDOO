@@ -1,8 +1,9 @@
 package logicatienda.comprador;
 
 import logicatienda.animales.Animal;
-import logicatienda.animales.estados.EstadoAnimal;
+import logicatienda.animales.Estadistica;
 import java.util.Random;
+import logicatienda.animales.estados.Tipo;
 
 public class Comprador {
 
@@ -51,17 +52,17 @@ public class Comprador {
         int precioCalculado = this.valorDeCompra;
 
         int cantidadEstadosAdversos = 0;
-        if (mascota.tieneEstado(EstadoAnimal.Tipo.TRISTE)) cantidadEstadosAdversos++;
-        if (mascota.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)) cantidadEstadosAdversos++;
-        if (mascota.tieneEstado(EstadoAnimal.Tipo.SUCIO)) cantidadEstadosAdversos++;
-        if (mascota.tieneEstado(EstadoAnimal.Tipo.ENFERMO)) cantidadEstadosAdversos++;
+        if (mascota.tieneEstado(Tipo.TRISTE)) cantidadEstadosAdversos++;
+        if (mascota.tieneEstado(Tipo.HAMBRIENTO)) cantidadEstadosAdversos++;
+        if (mascota.tieneEstado(Tipo.SUCIO)) cantidadEstadosAdversos++;
+        if (mascota.tieneEstado(Tipo.ENFERMO)) cantidadEstadosAdversos++;
 
         precioCalculado -= (cantidadEstadosAdversos * PENALIZACION_ESTADO);
 
-        int pFelicidad = ((Animal.MAX - mascota.getNivel(Animal.Estadistica.FELICIDAD)) / 10) * 5;
-        int pSaciedad  = ((Animal.MAX - mascota.getNivel(Animal.Estadistica.SACIEDAD)) / 10) * 5;
-        int pHigiene   = ((Animal.MAX - mascota.getNivel(Animal.Estadistica.HIGIENE)) / 10) * 5;
-        int pSalud     = ((Animal.MAX - mascota.getNivel(Animal.Estadistica.SALUD)) / 10) * 5;
+        int pFelicidad = ((Animal.MAX - mascota.getNivel(Estadistica.FELICIDAD)) / 10) * 5;
+        int pSaciedad  = ((Animal.MAX - mascota.getNivel(Estadistica.SACIEDAD)) / 10) * 5;
+        int pHigiene   = ((Animal.MAX - mascota.getNivel(Estadistica.HIGIENE)) / 10) * 5;
+        int pSalud     = ((Animal.MAX - mascota.getNivel(Estadistica.SALUD)) / 10) * 5;
 
         precioCalculado -= (pFelicidad + pSaciedad + pHigiene + pSalud);
 
