@@ -23,7 +23,15 @@ public class Usuario {
         this.inventario.quitarUno(indice);
     }
 
-    public void getCantItem(int indice){
-        this.inventario.getCantidad(indice);
+    public int getCantItem(int indice){
+        return this.inventario.getCantidad(indice);
+    }
+
+    public void darDinero(int cantidad){
+        this.dinero+=cantidad;
+    }
+
+    public void quitarDinero(int cantidad){
+        this.dinero-=cantidad;
     }
 }
