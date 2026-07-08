@@ -27,31 +27,6 @@ public abstract class Animal {
     protected Map<Estadistica, Integer> estadisticas;
 
     /**
-     * Enum que define las estadísticas de un animal.
-     * Cada estadística tiene un índice para acceso rápido.
-     */
-    public enum Estadistica {
-        FELICIDAD(0),
-        SACIEDAD(1),
-        HIGIENE(2),
-        SALUD(3);
-        private final int indice;
-
-        /**
-         * Obtiene el índice de la estadística.
-         * @return El índice numérico
-         */
-        private Estadistica(int indice){
-            this.indice=indice;
-        }
-
-        public int getIndex() {
-            return indice;
-        }
-
-    }
-
-    /**
      * Constructor de Animal.
      * Inicializa todas las estadísticas al valor inicial y los estados positivos.
      *
