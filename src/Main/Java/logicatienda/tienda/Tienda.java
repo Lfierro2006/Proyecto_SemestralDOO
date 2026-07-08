@@ -2,8 +2,8 @@ package logicatienda.tienda;
 
 import java.util.ArrayList;
 import java.util.List;
-import logicatienda.animales.Animal;
-import logicatienda.habitat.Habitat;
+import logicatienda.animales.*;
+import logicatienda.habitat.*;
 import logicatienda.comprador.Comprador;
 
 public class Tienda {
