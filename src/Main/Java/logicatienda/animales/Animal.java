@@ -120,7 +120,7 @@ public abstract class Animal {
         if (this.tieneEstado(Tipo.ENFERMO)||this.tieneEstado(Tipo.HAMBRIENTO)){
             return;
         }
-        int felicidad = this.getNivel(Estadistica.SACIEDAD);
+        int felicidad = this.getNivel(Estadistica.FELICIDAD);
         int bonus = (FELICIDAD_MIN-felicidad)/3;
 
         this.aumentarNivel(Estadistica.FELICIDAD,40+bonus);
