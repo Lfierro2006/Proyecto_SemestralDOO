@@ -1,30 +1,45 @@
 package logicatienda.inventario;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Inventario<T> {
+public class Inventario {
 
-    private List<T> elementos;
+    private ArrayList<Integer> cantidades;
 
-    public Inventario() {
-        this.elementos = new ArrayList<>();
+    public Inventario(int cantidadDeTiposDiferentes) {
+        this.cantidades = new ArrayList<>();
+
+        for (int i = 0; i < cantidadDeTiposDiferentes; i++) {
+            this.cantidades.add(0);
+        }
     }
 
-    public void agregar(T item) {
-        this.elementos.add(item);
-        System.out.println("Se guardó en el inventario de espera.");
+    public void sumarUno(int indice) {
+        if (indice >= 0 && indice < this.cantidades.size()) {
+            int valorActual = this.cantidades.get(indice);
+            this.cantidades.set(indice, valorActual + 1);
+        } else {
+            System.out.println("Índice de inventario no válido.");
+        }
     }
 
-    public boolean quitar(T item) {
-        return this.elementos.remove(item);
+
+    public boolean quitarUno(int indice) {
+        if (indice >= 0 && indice < this.cantidades.size()) {
+            int valorActual = this.cantidades.get(indice);
+
+            if (valorActual > 0) {
+                this.cantidades.set(indice, valorActual - 1);
+                return true;
+            }
+        }
+        return false;
     }
 
-    public List<T> getElementos() {
-        return this.elementos;
-    }
-
-    public boolean estaVacio() {
-        return this.elementos.isEmpty();
+    public int getCantidad(int indice) {
+        if (indice >= 0 && indice < this.cantidades.size()) {
+            return this.cantidades.get(indice);
+        }
+        return 0;
     }
 }
