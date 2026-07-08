@@ -61,7 +61,7 @@ public class ventanaTiendaMain extends JFrame {
         return width;
     }
 
-    public static void main() {
+    public static void main(String[] args) {
         ventanaTiendaMain v = new ventanaTiendaMain();
         v.setVisible(true);
     }
