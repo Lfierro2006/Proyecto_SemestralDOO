@@ -1,5 +1,6 @@
 package logicagrafica;
 import logicatienda.animales.*;
+import logicatienda.comprador.Comprador;
 import logicatienda.observers.AnimalObserver;
 import logicatienda.habitat.*;
 import logicatienda.tienda.Tienda;
@@ -18,7 +19,8 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private ImageIcon alertaHambre, alertaSucio, alertaTriste, alertaEnfermo;
     private ImageIcon GCama, GJaula, GPecera, GPerro, GGato, GAve, GPez; //G de Grafico
     private JButton btnBuyJaula, btnBuyCama, btnBuyPecera;
-    private JButton btnAñadirPerro, btnAñadirGato, btnAñadirAve, btnAñadirPez;
+    private JButton btnAñadirPerro, btnAñadirGato, btnAñadirAve, btnAñadirPez, btnVender;
+    private boolean mostrandoMenuVender = false;
     // Animal mascota = habitat.getResidente();
     private Runnable actualizarP;
     private JPanel panelMenu;
@@ -34,7 +36,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private boolean mostrandoMenuAnimal = false;
     private boolean mostrandoMenuHabitat = false; //Menu para comprar habitats
     private boolean mostrandoMenuCama= false;
-    private boolean mostandoMenuPescera= false;
+    private boolean mostrandoMenuPescera = false;
     private boolean mostrandoMenuJaula = false;
 
     public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda, Runnable actualizarP){
@@ -66,7 +68,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.setOpaque(false);
         this.add(panelMenu, BorderLayout.CENTER);
 
-
+        btnVender = new JButton("Vender Animal");
 
         btnBuyJaula = new JButton("Jaula ($200)", cargarImagen("Jaula.png", 40 , 40));
         btnBuyPecera = new JButton("Pecera ($190)", cargarImagen("pescera.png",30,30));
@@ -148,6 +150,25 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             }
         });
 
+        //BOTON PARA VENDER ANIMALES
+        btnVender.addActionListener(e -> {
+            Comprador cliente = tiendaLogica.getCompradoractual();
+
+            if (cliente != null) {
+
+                boolean exito = tiendaLogica.venderMascotaACliente(this.habitat, cliente);
+
+                if (exito) {
+                    tiendaLogica.setCompradoractual(null);
+                    if (actualizarP != null) actualizarP.run(); // Actualiza dinero y borra el texto del mostrador
+                } else {
+                    System.out.println("No es la especie que busca, o está en muy mal estado.");
+                }
+            } else {
+                System.out.println("No hay ningún cliente esperando en el mostrador.");
+            }
+            ocultarTodosLosBotones();
+        });
 
         //BOTONES PARA INTERACTUAR CON EL ANIMAL DEL HABITAT YA PUESTO
         btnMedicina.addMouseListener(detectorClicDerecho);
@@ -244,8 +265,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         mostrandoMenuHabitat = true;
         mostrandoMenuAnimal = false;
         mostrandoMenuCama= false;
-        mostandoMenuPescera= false;
+        mostrandoMenuPescera = false;
         mostrandoMenuJaula = false;
+        mostrandoMenuVender= false;
         //Vaciar cualquier boton previo por si acaso
         panelMenu.removeAll();
         //formar las filas para los botones
@@ -263,8 +285,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         mostrandoMenuHabitat = false;
         mostrandoMenuAnimal = true;
         mostrandoMenuCama= false;
-        mostandoMenuPescera= false;
+        mostrandoMenuPescera = false;
         mostrandoMenuJaula = false;
+        mostrandoMenuVender= false;
         panelMenu.removeAll();
 
         panelMenu.setLayout(new GridLayout(4, 1, 0, 1));
@@ -280,11 +303,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     private void mostrarBotonesAñadirCama(){
-
+        mostrandoMenuVender= false;
         mostrandoMenuAnimal= false;
         mostrandoMenuHabitat = false;
         mostrandoMenuCama= true;
-        mostandoMenuPescera= false;
+        mostrandoMenuPescera = false;
         mostrandoMenuJaula = false;
 
         btnAñadirPerro.setText("Perro: " + tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()));
@@ -301,11 +324,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     private void mostrarBotonesAñadirPez(){
-
+        mostrandoMenuVender= false;
         mostrandoMenuAnimal= false;
         mostrandoMenuHabitat = false;
         mostrandoMenuCama= false;
-        mostandoMenuPescera= true;
+        mostrandoMenuPescera = true;
         mostrandoMenuJaula = false;
 
         btnAñadirPez.setText("Pez: " + tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()));
@@ -321,11 +344,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     private void mostrarBotonesAñadirAve(){
-
+        mostrandoMenuVender= false;
         mostrandoMenuAnimal= false;
         mostrandoMenuHabitat = false;
         mostrandoMenuCama= false;
-        mostandoMenuPescera= false;
+        mostrandoMenuPescera = false;
         mostrandoMenuJaula = true;
 
         btnAñadirAve.setText("Ave: " + tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()));
@@ -339,13 +362,24 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.revalidate();
         panelMenu.repaint();
     }
+    private void mostrarMenuVender() {
+        ocultarTodosLosBotones();
+        mostrandoMenuVender = true;
 
+        panelMenu.removeAll();
+        panelMenu.setLayout(new GridLayout(1, 1));
+        panelMenu.add(btnVender);
+
+        panelMenu.revalidate();
+        panelMenu.repaint();
+    }
     private void ocultarTodosLosBotones() {
         mostrandoMenuAnimal = false;
         mostrandoMenuHabitat= false;
         mostrandoMenuCama= false;
-        mostandoMenuPescera= false;
+        mostrandoMenuPescera = false;
         mostrandoMenuJaula = false;
+        mostrandoMenuVender= false;
         panelMenu.removeAll();
         //repintar el animal y los iconos;
         panelMenu.revalidate();
@@ -380,8 +414,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     public void ejecutarAccion(MouseEvent e) {
 
         if (SwingUtilities.isRightMouseButton(e)) {
-            if(mostrandoMenuHabitat || mostrandoMenuAnimal) ocultarTodosLosBotones(); //OCULTAR BOTONES
-            else if (this.habitat != null && this.habitat.estaVacio()) desmantelarHabitat(); //REEMBOLSAR HABITAT
+            if(mostrandoMenuHabitat || mostrandoMenuAnimal || mostrandoMenuVender ||mostrandoMenuCama || mostrandoMenuJaula || mostrandoMenuPescera) ocultarTodosLosBotones(); //OCULTAR BOTONES
+            else if (this.habitat != null && this.habitat.estaVacio()) desmantelarHabitat();//REEMBOLSAR HABITAT
+            else if (tieneAnimal() && !mostrandoMenuVender) mostrarMenuVender();
+
+
             return;
 
         }
