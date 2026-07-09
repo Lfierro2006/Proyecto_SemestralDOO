@@ -264,13 +264,4 @@ public abstract class Animal {
             observer.onEstadisticasCambiadas(this);
         }
     }
-
-    /**
-     * Notifica a todos los observers que el estado ha cambiado.
-     */
-    private void notificarCambioEstado() {
-        for (AnimalObserver observer : this.observers) {
-            observer.onEstadoCambiado(this);
-        }
-    }
 }

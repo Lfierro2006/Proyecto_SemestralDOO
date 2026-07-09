@@ -608,16 +608,6 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     /**
-     * Notifica que el estado del animal ha cambiado.
-     * Actualiza la interfaz gráfica.
-     * @param animal El animal que cambió
-     */
-    @Override
-    public void onEstadoCambiado(Animal animal) {
-        this.repaint();
-    }
-
-    /**
      * Elimina el observer del animal residente.
      */
     public void removerObserver() {
