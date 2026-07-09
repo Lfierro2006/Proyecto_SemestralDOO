@@ -39,6 +39,7 @@ public class ventanaTiendaMain extends JFrame {
         this.add(Presupuesto, 0);
         Runnable actualizarPr=()  -> {
             Presupuesto.setText("$" + tiendalogica.getUsuario().getDinero());
+            mostrador.actualizarLetreroCliente();
         };
         mostrador = new Mostrador(ancho*2,0 ,ancho*6 ,alto*3 ,tiendalogica, actualizarPr);
         this.add (mostrador);
@@ -53,7 +54,7 @@ public class ventanaTiendaMain extends JFrame {
                 index++;
             }
         }
-        relojJuego = new Timer(5000, e -> avanzarTiempo());
+        relojJuego = new Timer(10000, e -> avanzarTiempo());
         relojJuego.start();
 
     }
