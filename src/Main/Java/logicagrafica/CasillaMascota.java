@@ -4,6 +4,7 @@ import logicatienda.observers.AnimalObserver;
 import logicatienda.habitat.*;
 import logicatienda.tienda.Tienda;
 import logicatienda.animales.Estadistica;
+import logicatienda.usuario.Item;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,13 +89,13 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnBuyPecera = new JButton("Pecera ($190)", cargarImagen("pescera.png",30,30));
         btnBuyCama = new JButton("Cama ($180)", cargarImagen("cama.png", 40, 40));
 
-        btnAñadirPerro= new JButton("Perro", cargarImagen("perro.png",40,40));
-        btnAñadirGato= new JButton("Gato", cargarImagen("gato.png",40,40));
-        btnAñadirAve= new JButton("Ave", cargarImagen("ave.png",40,40));
-        btnAñadirPez= new JButton("Pez", cargarImagen("Pezp.png",40,40));
+        btnAñadirPerro= new JButton("Perro: "+this.tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()), cargarImagen("perro.png",40,40));
+        btnAñadirGato= new JButton("Gato: "+this.tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex()), cargarImagen("gato.png",40,40));
+        btnAñadirAve= new JButton("Ave: "+this.tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()), cargarImagen("ave.png",40,40));
+        btnAñadirPez= new JButton("Pez: "+this.tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()), cargarImagen("Pezp.png",40,40));
 
-        btnMedicina = new JButton("Dar Medicina", cargarImagen("darMed.png",30,30));
-        btnAlimentar = new JButton("Alimentar", cargarImagen("darComida.png", 30, 30));
+        btnMedicina = new JButton("Dar Medicina: " +this.tiendaLogica.getUsuario().getCantItem(Item.MEDICINA.getIndex()), cargarImagen("darMed.png",30,30));
+        btnAlimentar = new JButton("Alimentar: "+this.tiendaLogica.getUsuario().getCantItem(Item.COMIDA.getIndex()), cargarImagen("darComida.png", 30, 30));
         btnLimpiar = new JButton("Limpiar Habitat", cargarImagen("limpiar.png", 30, 30));
         btnJugar = new JButton("Jugar", cargarImagen("jugar.png", 30, 30 ));
 
@@ -125,6 +126,13 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAñadirAve.addMouseListener(detectorClicDerecho);
         btnAñadirPez.addMouseListener(detectorClicDerecho);
 
+        btnAñadirPerro.addActionListener(e -> {
+
+
+
+
+        });
+
         //ME FALTAN ACTION LISTENERS PARA AQUI
 
         //BOTONES PARA INTERACTUAR CON EL ANIMAL DEL HABITAT YA PUESTO
@@ -133,10 +141,33 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnLimpiar.addMouseListener(detectorClicDerecho);
         btnJugar.addMouseListener(detectorClicDerecho);
 
-        btnMedicina.addActionListener(e -> {if(tieneAnimal()) habitat.getResidente().Curar(40); ocultarTodosLosBotones();});
-        btnAlimentar.addActionListener(e -> {if(tieneAnimal()) habitat.getResidente().Alimentar(); ocultarTodosLosBotones();});
-        btnLimpiar.addActionListener(e -> {if(tieneAnimal()) habitat.getResidente().Limpiar(); ocultarTodosLosBotones();});
-        btnJugar.addActionListener(e -> {if(tieneAnimal()) habitat.getResidente().Jugar(); ocultarTodosLosBotones();});
+        btnMedicina.addActionListener(e -> {if(tieneAnimal()){
+            int medicina = Item.MEDICINA.getIndex();
+            if(medicina>0){
+            this.habitat.getResidente().Curar(40);
+            tienda.getUsuario().restarItem(medicina);
+            }
+            else{
+                System.out.println("No tienes existencias");
+            }
+
+        }
+        ocultarTodosLosBotones();
+        });
+        btnAlimentar.addActionListener(e -> {if(tieneAnimal()){
+            int comida = Item.COMIDA.getIndex();
+            if (comida > 0){
+                this.habitat.getResidente().Alimentar();
+                tienda.getUsuario().restarItem(comida);
+            }
+            else{
+                System.out.println("No tienes existencias");
+            }
+        }
+
+            ocultarTodosLosBotones();});
+        btnLimpiar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().Limpiar(); ocultarTodosLosBotones();});
+        btnJugar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().Jugar(); ocultarTodosLosBotones();});
 
         ocultarTodosLosBotones();
     }
@@ -331,7 +362,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         tiendaLogica.reembolso(valorReembolso);
         tiendaLogica.getEspaciosActivos().remove(habitat);
-        habitat = null;
+        this.habitat = null;
         if(actualizarP !=null)actualizarP.run();
         System.out.println("Hábitat desmantelado desde la Casilla. Reembolso: $" + valorReembolso);
         ocultarTodosLosBotones();
@@ -362,7 +393,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         if (SwingUtilities.isRightMouseButton(e)) {
             if(mostrandoMenuHabitat || mostrandoMenuAnimal) ocultarTodosLosBotones(); //OCULTAR BOTONES
-            else if (habitat != null && habitat.estaVacio()) desmantelarHabitat(); //REEMBOLSAR HABITAT
+            else if (this.habitat != null && this.habitat.estaVacio()) desmantelarHabitat(); //REEMBOLSAR HABITAT
             return;
 
         }
@@ -430,7 +461,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             }
 
 
-        } else if (!mostrandoMenuAnimal && !habitat.estaVacio()) {
+        } else if (!mostrandoMenuAnimal && tieneAnimal()) {
             Animal mascota = habitat.getResidente();
             g.setColor(Color.BLACK);
             if (mascota instanceof Perro){
@@ -445,7 +476,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
                 g.drawImage(GJaula.getImage(), 0,0, getWidth(), getHeight(),null);
             } else if (mascota instanceof Pez) {
                 g.drawImage(GPecera.getImage(),0,0, getWidth(),getHeight(),null );
-                g.drawImage(GAve.getImage(), 0,0, getWidth(), getHeight(),null);
+                g.drawImage(GPez.getImage(), 0,0, getWidth(), getHeight(),null);
 
             }
 

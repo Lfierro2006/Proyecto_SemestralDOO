@@ -1,7 +1,8 @@
 package logicagrafica;
 
+import logicatienda.animales.*;
 import logicatienda.tienda.Tienda;
-
+import logicatienda.usuario.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,7 +16,10 @@ public class VentanaTiendaMain extends JFrame {
     private Tienda tiendalogica;
     private Mostrador mostrador;
     private JLabel Presupuesto;
+    private CasillaMascota[] casillas;
     private Runnable actualizarP;
+    private Timer relojJuego;
+    private Usuario Jugador;
 
     /**
      * Constructor de la ventana principal.
@@ -26,7 +30,6 @@ public class VentanaTiendaMain extends JFrame {
         //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO,
         // SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width
         // y height y volver a ejecutar la virtual machine
-
         this.setTitle("Tienda Principal");
         this.setSize(width, height); // En caso de querer cambiar la ventana por favor mantener la proporcion de 8:5
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,30 +40,45 @@ public class VentanaTiendaMain extends JFrame {
         int ancho = width/8-2;
 
         tiendalogica = new Tienda(30000);
-        mostrador = new Mostrador(ancho*2,0 ,ancho*6 ,alto*3 ,tiendalogica);
-        this.add (mostrador);
-        Presupuesto = new JLabel("$" + tiendalogica.getPresupuesto());
+
+
+        Presupuesto = new JLabel("$" + tiendalogica.getUsuario().getDinero());
 
         Presupuesto.setFont(new Font("Arial", Font.BOLD, 70));
         Presupuesto.setForeground(new Color(49, 243, 49));
         Presupuesto.setBounds((int)(ancho*6.3),(int) (alto*2.3),(int)(ancho*1.6),(int)(alto*0.8));
         this.add(Presupuesto, 0);
-        Runnable ActualizarPresupuesto=()  -> {
-            Presupuesto.setText("$" + tiendalogica.getPresupuesto());
+        Runnable actualizarPr=()  -> {
+            Presupuesto.setText("$" + tiendalogica.getUsuario().getDinero());
         };
-        CasillaMascota[] casillas = new CasillaMascota[22];
+        mostrador = new Mostrador(ancho*2,0 ,ancho*6 ,alto*3 ,tiendalogica, actualizarPr);
+        this.add (mostrador);
+        casillas = new CasillaMascota[22];
         for (int fila = 0,index=0; fila < 5; fila++) {
             int columnas = (fila <= 2) ? 2 : 8;
             for (int col = 0; col < columnas; col++) {
                 int x = col * ancho;
                 int y = fila * alto;
-                casillas[index] = new CasillaMascota(x, y, ancho, alto, null, tiendalogica, ActualizarPresupuesto);
+                casillas[index] = new CasillaMascota(x, y, ancho, alto, null, tiendalogica, actualizarPr);
                 this.add(casillas[index]);
                 index++;
             }
         }
+        relojJuego = new Timer(5000, e -> avanzarTiempo());
+        relojJuego.start();
 
+    }
+    private void avanzarTiempo(){
+        for(CasillaMascota casilla : casillas){
+            if (casilla != null && casilla.tieneAnimal()){
+                Animal mascota =casilla.getHabitat().getResidente();
 
+                mascota.disminuirNivel(Estadistica.FELICIDAD,5);
+                mascota.disminuirNivel(Estadistica.HIGIENE,3);
+                mascota.disminuirNivel(Estadistica.SACIEDAD,3);
+                mascota.disminuirNivel(Estadistica.SALUD ,1);
+            }
+        }
     }
 
     /**

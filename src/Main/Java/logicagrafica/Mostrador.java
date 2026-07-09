@@ -1,10 +1,11 @@
 package logicagrafica;
 
 import logicatienda.tienda.Tienda;
+import logicatienda.usuario.Item;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
+
 /**
  * Panel que representa el mostrador de la tienda.
  * Contiene el fondo y los botones para acceder a las diferentes tiendas.
@@ -16,6 +17,7 @@ public class Mostrador extends JPanel {
     private JButton btnMonitor2;
     private JButton btnMonitor3;
     private Tienda tiendaLogica;
+    private Runnable actualizarP;
     //DEBO AÑADIR LA FUNCIONALIDAD DE LOS BOTONES
     /**
      * Constructor del mostrador.
@@ -25,8 +27,11 @@ public class Mostrador extends JPanel {
      * @param alto Alto del panel
      * @param tienda Referencia a la tienda lógica
      */
-    public Mostrador(int x, int y, int ancho, int alto, Tienda tienda){
+    public Mostrador(int x, int y, int ancho, int alto, Tienda tienda, Runnable actualizarP){
         this.tiendaLogica=tienda;
+        this.actualizarP=actualizarP;
+
+        JFrame framePadre = (JFrame) SwingUtilities.getWindowAncestor(this);
         this.setBounds(x, y ,ancho, alto);
         this.setLayout(null);
         int AN= ancho/6;
@@ -49,6 +54,10 @@ public class Mostrador extends JPanel {
         btnMonitor1.setBounds(AN+1, (int) (AL*1.69), (int) (AN*1.19), AL/5);
         btnMonitor2.setBounds(AN+1, (int) (AL*1.88), (int) (AN*1.19), AL/5);
         btnMonitor3.setBounds(AN+1, (int) (AL*2.07), (int) (AN*1.19), AL/5);
+
+        btnMonitor1.addActionListener(e -> {new TiendaItem(framePadre, "Medicina", 150, Item.MEDICINA, tiendaLogica, this.actualizarP).setVisible(true);});
+        btnMonitor2.addActionListener(e -> {new TiendaItem(framePadre, "Comida", 200, Item.COMIDA, tiendaLogica, this.actualizarP).setVisible(true);});
+
 
         this.add(btnMonitor1);
         this.add(btnMonitor2);

@@ -44,6 +44,10 @@ public class Tienda {
         return this.espaciosActivos;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     /**
      * Compra un hábitat y lo añade a los espacios activos de la tienda.
      * Verifica que no se supere la capacidad máxima y que el usuario tenga suficiente dinero.
