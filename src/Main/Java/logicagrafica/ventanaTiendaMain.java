@@ -2,7 +2,7 @@ package logicagrafica;
 
 import logicatienda.animales.*;
 import logicatienda.tienda.Tienda;
-
+import logicatienda.usuario.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,6 +16,7 @@ public class ventanaTiendaMain extends JFrame {
     private CasillaMascota[] casillas;
     private Runnable actualizarP;
     private Timer relojJuego;
+    private Usuario Jugador;
     public ventanaTiendaMain(){ //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO, SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width y height y volver compilar
 
         this.setTitle("Tienda Principal");
@@ -28,24 +29,26 @@ public class ventanaTiendaMain extends JFrame {
         int ancho = width/8-2;
 
         tiendalogica = new Tienda(30000);
-        mostrador = new Mostrador(ancho*2,0 ,ancho*6 ,alto*3 ,tiendalogica);
-        this.add (mostrador);
-        Presupuesto = new JLabel("$" + tiendalogica.getPresupuesto());
+
+
+        Presupuesto = new JLabel("$" + tiendalogica.getUsuario().getDinero());
 
         Presupuesto.setFont(new Font("Arial", Font.BOLD, 70));
         Presupuesto.setForeground(new Color(49, 243, 49));
         Presupuesto.setBounds((int)(ancho*6.3),(int) (alto*2.3),(int)(ancho*1.6),(int)(alto*0.8));
         this.add(Presupuesto, 0);
-        Runnable ActualizarPresupuesto=()  -> {
-            Presupuesto.setText("$" + tiendalogica.getPresupuesto());
+        Runnable actualizarPr=()  -> {
+            Presupuesto.setText("$" + tiendalogica.getUsuario().getDinero());
         };
+        mostrador = new Mostrador(ancho*2,0 ,ancho*6 ,alto*3 ,tiendalogica, actualizarPr);
+        this.add (mostrador);
         casillas = new CasillaMascota[22];
         for (int fila = 0,index=0; fila < 5; fila++) {
             int columnas = (fila <= 2) ? 2 : 8;
             for (int col = 0; col < columnas; col++) {
                 int x = col * ancho;
                 int y = fila * alto;
-                casillas[index] = new CasillaMascota(x, y, ancho, alto, null, tiendalogica, ActualizarPresupuesto);
+                casillas[index] = new CasillaMascota(x, y, ancho, alto, null, tiendalogica, actualizarPr);
                 this.add(casillas[index]);
                 index++;
             }
@@ -59,10 +62,10 @@ public class ventanaTiendaMain extends JFrame {
             if (casilla != null && casilla.tieneAnimal()){
                 Animal mascota =casilla.getHabitat().getResidente();
 
-                mascota.disminuirNivel(Animal.Estadistica.FELICIDAD,5);
-                mascota.disminuirNivel(Animal.Estadistica.HIGIENE,3);
-                mascota.disminuirNivel(Animal.Estadistica.SACIEDAD,3);
-                mascota.disminuirNivel(Animal.Estadistica.SALUD ,1);
+                mascota.disminuirNivel(Estadistica.FELICIDAD,5);
+                mascota.disminuirNivel(Estadistica.HIGIENE,3);
+                mascota.disminuirNivel(Estadistica.SACIEDAD,3);
+                mascota.disminuirNivel(Estadistica.SALUD ,1);
             }
         }
     }
