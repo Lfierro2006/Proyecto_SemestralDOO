@@ -46,7 +46,7 @@ public class Mostrador extends JPanel {
 
         btnMonitor1.addActionListener(e -> {new TiendaItem(framePadre, "Medicina", 150, Item.MEDICINA, tiendaLogica, this.actualizarP).setVisible(true);});
         btnMonitor2.addActionListener(e -> {new TiendaItem(framePadre, "Comida", 200, Item.COMIDA, tiendaLogica, this.actualizarP).setVisible(true);});
-
+        btnMonitor3.addActionListener(e -> {new TiendaAnimales(framePadre,tiendaLogica, actualizarP).setVisible(true);});
 
         this.add(btnMonitor1);
         this.add(btnMonitor2);
