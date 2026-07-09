@@ -26,6 +26,10 @@ public class Tienda {
         return this.espaciosActivos;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public boolean comprarHabitat(Habitat nuevoHabitat, int costo) {
 
         if (this.espaciosActivos.size() >= CAPACIDAD_MAXIMA) {
