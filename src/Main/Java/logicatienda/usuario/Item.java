@@ -16,7 +16,7 @@ public enum Item {
     /**
      * Constructor de ítem.
      * @param indice Índice del ítem en el inventario
-     */x
+     */
     private Item(int indice){
         this.indice=indice;
     }
