@@ -212,8 +212,9 @@ public abstract class Animal {
      * Ejecuta el comportamiento de todos los estados actuales del animal.
      * Cada estado aplica su efecto sobre las estadísticas.
      */
-    public void ejecutarEstado(){
-        for (EstadoAnimal estado : this.estadosActuales){
+    public void ejecutarEstado() {
+        List<EstadoAnimal> copia = new ArrayList<>(this.estadosActuales);
+        for (EstadoAnimal estado : copia) {
             estado.ejecutar(this);
         }
     }
