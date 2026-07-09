@@ -157,7 +157,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         btnMedicina.addActionListener(e -> {if(tieneAnimal()){
             int medicina = Item.MEDICINA.getIndex();
-            if(medicina>0){
+            if(tiendaLogica.getUsuario().getCantItem(medicina)>0){
             this.habitat.getResidente().Curar(40);
             tiendaLogica.getUsuario().restarItem(medicina);
             }
@@ -170,7 +170,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         });
         btnAlimentar.addActionListener(e -> {if(tieneAnimal()){
             int comida = Item.COMIDA.getIndex();
-            if (comida > 0){
+            if (tiendaLogica.getUsuario().getCantItem(comida)> 0){
                 this.habitat.getResidente().Alimentar();
                 tiendaLogica.getUsuario().restarItem(comida);
             }
