@@ -1,5 +1,6 @@
 package logicagrafica;
 
+import logicatienda.animales.*;
 import logicatienda.tienda.Tienda;
 
 import javax.swing.*;
@@ -12,8 +13,10 @@ public class ventanaTiendaMain extends JFrame {
     private Tienda tiendalogica;
     private Mostrador mostrador;
     private JLabel Presupuesto;
+    private CasillaMascota[] casillas;
     private Runnable actualizarP;
-    public ventanaTiendaMain(){ //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO, SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width y height y volver a ejecutar la virtual machine
+    private Timer relojJuego;
+    public ventanaTiendaMain(){ //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO, SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width y height y volver compilar
 
         this.setTitle("Tienda Principal");
         this.setSize(width, height); // En caso de querer cambiar la ventana por favor mantener la proporcion de 8:5
@@ -36,7 +39,7 @@ public class ventanaTiendaMain extends JFrame {
         Runnable ActualizarPresupuesto=()  -> {
             Presupuesto.setText("$" + tiendalogica.getPresupuesto());
         };
-        CasillaMascota[] casillas = new CasillaMascota[22];
+        casillas = new CasillaMascota[22];
         for (int fila = 0,index=0; fila < 5; fila++) {
             int columnas = (fila <= 2) ? 2 : 8;
             for (int col = 0; col < columnas; col++) {
@@ -47,8 +50,21 @@ public class ventanaTiendaMain extends JFrame {
                 index++;
             }
         }
+        relojJuego = new Timer(5000, e -> avanzarTiempo());
+        relojJuego.start();
 
+    }
+    private void avanzarTiempo(){
+        for(CasillaMascota casilla : casillas){
+            if (casilla != null && casilla.tieneAnimal()){
+                Animal mascota =casilla.getHabitat().getResidente();
 
+                mascota.disminuirNivel(Animal.Estadistica.FELICIDAD,5);
+                mascota.disminuirNivel(Animal.Estadistica.HIGIENE,3);
+                mascota.disminuirNivel(Animal.Estadistica.SACIEDAD,3);
+                mascota.disminuirNivel(Animal.Estadistica.SALUD ,1);
+            }
+        }
     }
 
     @Override
