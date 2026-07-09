@@ -73,11 +73,7 @@ public class VentanaTiendaMain extends JFrame {
         for(CasillaMascota casilla : casillas){
             if (casilla != null && casilla.tieneAnimal()){
                 Animal mascota =casilla.getHabitat().getResidente();
-
-                mascota.disminuirNivel(Estadistica.FELICIDAD,5);
-                mascota.disminuirNivel(Estadistica.HIGIENE,3);
-                mascota.disminuirNivel(Estadistica.SACIEDAD,3);
-                mascota.disminuirNivel(Estadistica.SALUD ,1);
+                mascota.ejecutarEstado();
             }
         }
     }

@@ -162,14 +162,6 @@ public abstract class Animal {
 
 
     /**
-     * Obtiene la lista de estados actuales del animal.
-     * @return Lista de estados
-     */
-    public List<EstadoAnimal> getEstados(){
-        return this.estadosActuales;
-    }
-
-    /**
      * Verifica si el animal tiene un estado específico.
      * @param tipo El tipo de estado a verificar
      * @return true si tiene el estado, false en caso contrario
