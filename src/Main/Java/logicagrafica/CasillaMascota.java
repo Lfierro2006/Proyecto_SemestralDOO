@@ -159,7 +159,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             int medicina = Item.MEDICINA.getIndex();
             if(medicina>0){
             this.habitat.getResidente().Curar(40);
-            tienda.getUsuario().restarItem(medicina);
+            tiendaLogica.getUsuario().restarItem(medicina);
             }
             else{
                 System.out.println("No tienes existencias");
@@ -172,10 +172,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             int comida = Item.COMIDA.getIndex();
             if (comida > 0){
                 this.habitat.getResidente().Alimentar();
-                tienda.getUsuario().restarItem(comida);
+                tiendaLogica.getUsuario().restarItem(comida);
             }
             else{
-                System.out.println("No tienes existencias");
+                System.out.println("El Animal no esta hambriento o no tienes existencias");
             }
         }
 
@@ -268,7 +268,8 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.removeAll();
 
         panelMenu.setLayout(new GridLayout(4, 1, 0, 1));
-
+        btnMedicina.setText("Dar Medicina: " + tiendaLogica.getUsuario().getCantItem(Item.MEDICINA.getIndex()));
+        btnAlimentar.setText("Alimentar: " + tiendaLogica.getUsuario().getCantItem(Item.COMIDA.getIndex()));
         panelMenu.add(btnMedicina);
         panelMenu.add(btnAlimentar);
         panelMenu.add(btnLimpiar);
