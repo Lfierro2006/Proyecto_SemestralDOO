@@ -5,7 +5,10 @@ import logicatienda.tienda.Tienda;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-
+/**
+ * Panel que representa el mostrador de la tienda.
+ * Contiene el fondo y los botones para acceder a las diferentes tiendas.
+ */
 public class Mostrador extends JPanel {
     private Image bg;//BACKGROUND O IMAGEN DE FONDO
 
@@ -14,6 +17,14 @@ public class Mostrador extends JPanel {
     private JButton btnMonitor3;
     private Tienda tiendaLogica;
     //DEBO AÑADIR LA FUNCIONALIDAD DE LOS BOTONES
+    /**
+     * Constructor del mostrador.
+     * @param x Posición X
+     * @param y Posición Y
+     * @param ancho Ancho del panel
+     * @param alto Alto del panel
+     * @param tienda Referencia a la tienda lógica
+     */
     public Mostrador(int x, int y, int ancho, int alto, Tienda tienda){
         this.tiendaLogica=tienda;
         this.setBounds(x, y ,ancho, alto);
@@ -43,6 +54,14 @@ public class Mostrador extends JPanel {
         this.add(btnMonitor2);
         this.add(btnMonitor3);
     }
+
+    /**
+     * Carga y redimensiona una imagen desde la carpeta Sprites.
+     * @param nombreArchivo Nombre del archivo de imagen
+     * @param ancho Ancho deseado en píxeles
+     * @param alto Alto deseado en píxeles
+     * @return ImageIcon redimensionado, o un icono vacío si falla
+     */
     private ImageIcon cargarImagen(String nombreArchivo, int ancho, int alto){
         //Buscar la imagen
         java.net.URL urlImagen = getClass().getResource("Sprites/" + nombreArchivo);
@@ -57,6 +76,11 @@ public class Mostrador extends JPanel {
             return new ImageIcon();
         }
     }
+
+    /**
+     * Dibuja el fondo del mostrador.
+     * @param g Objeto Graphics para dibujar
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

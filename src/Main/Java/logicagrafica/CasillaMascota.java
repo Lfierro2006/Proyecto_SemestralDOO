@@ -9,7 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-
+/**
+ * Representa una casilla individual en el mostrador de la tienda.
+ * Puede contener un hábitat y un animal, y permite interactuar con ambos.
+ * Implementa AnimalObserver para recibir notificaciones de cambios en el animal.
+ */
 public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private Habitat habitat;
     private Tienda tiendaLogica;
@@ -30,7 +34,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private final int $Gato= 100;
     private final int $Pez= 100;
     private final String[] listaDeNombres={"Goku","Ezio", "Patata","Zeus", "Pepe", "Grace","Tolosin","Melasa","Robbie", "Roar", "Shrek", "Mahoraga" , "Rafael", "Miguel Angelo", "Donnatelo", "Leonardo", "Platon", "Socrates", "Mario" ,
-                            "Silvio", "Haaland", "Talon", "Zilean", "Jarvan", "Nilah", "Messi", "Vegetta", "Tito Soto", "Alexis", "Gustavo", "Pedro", "Rene", "Miku", "Majin Boo", "Fernanfloo", "Felipe", "Nestle","Corxea", "Bond",  "Braviary", "John Doe", "Jane Doe",
+                            "Silvio", "Haaland", "Talon", "Zilean", "Jarvan", "Geoffrey", "Nilah", "Messi", "Vegetta", "Tito Soto", "Alexis", "Gustavo", "Pedro", "Rene", "Miku", "Majin Boo", "Fernanfloo", "Felipe", "Nestle","Corxea", "Bond",  "Braviary", "John Doe", "Jane Doe",
                             "Cupcake","Petrus", "Honda", "Daniel", "El Tata", "Frederickson", "Teao", "Chipp", "Agnes"};
 
     private boolean mostrandoMenuAnimal = false;
@@ -39,6 +43,16 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private boolean mostandoMenuPescera= false;
     private boolean mostrandoMenuJaula = false;
 
+    /**
+     * Constructor de la casilla.
+     * @param x Posición X
+     * @param y Posición Y
+     * @param ancho Ancho de la casilla
+     * @param alto Alto de la casilla
+     * @param habitat Hábitat inicial (puede ser null)
+     * @param tienda Referencia a la tienda lógica
+     * @param actualizarP Runnable para actualizar la interfaz
+     */
     public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda, Runnable actualizarP){
         super(x,y,ancho,alto, "");
         this.habitat=habitat;
@@ -126,6 +140,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         ocultarTodosLosBotones();
     }
+
     /**
      * Metodo ayudante para cargar y redimensionar iconos de forma segura
      * @param nombreArchivo El nombre de la imagen (ej. "carne.png").
@@ -147,10 +162,24 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             return new ImageIcon();
         }
     }
+
+    /**
+     * Genera un nombre aleatorio para un animal.
+     *
+     * @return Nombre aleatorio de la lista predefinida
+     */
     private String RandomName(){
         int Aleatorio = (int)(Math.random() * listaDeNombres.length);
         return listaDeNombres[Aleatorio];
     }
+
+    /**
+     * Intenta comprar un hábitat y colocarlo en la casilla.
+     * Verifica que haya suficiente dinero y que la tienda lo permita.
+     *
+     * @param nuevoHabitat El hábitat a comprar
+     * @param costo Costo del hábitat
+     */
     private void intentarComprarHabitat(Habitat nuevoHabitat, int costo) {
         //Comprobacion si se pudo comprar o no
         boolean compraExitosa = tiendaLogica.comprarHabitat(nuevoHabitat, costo);
@@ -169,7 +198,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         ocultarTodosLosBotones(); // Redibuja la casilla con su nuevo estado
     }
 
-
+    /**
+     * Muestra los botones para comprar hábitats.
+     */
     private void mostrarBotonesHabitat() {
         mostrandoMenuHabitat = true;
         mostrandoMenuAnimal = false;
@@ -189,6 +220,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
+    /**
+     * Muestra los botones para interactuar con el animal.
+     */
     private void mostrarBotonesAnimal() {
         mostrandoMenuHabitat = false;
         mostrandoMenuAnimal = true;
@@ -208,8 +242,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
+    /**
+     * Muestra los botones para añadir animales a una cama (perros y gatos).
+     */
     private void mostrarBotonesAñadirCama(){
-
         mostrandoMenuAnimal= false;
         mostrandoMenuHabitat = false;
         mostrandoMenuCama= true;
@@ -226,6 +262,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
+    /**
+     * Muestra los botones para añadir animales a una pecera (solo peces).
+     */
     private void mostrarBotonesAñadirPez(){
 
         mostrandoMenuAnimal= false;
@@ -244,6 +283,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
+    /**
+     * Muestra los botones para añadir animales a una jaula (solo aves).
+     */
     private void mostrarBotonesAñadirAve(){
 
         mostrandoMenuAnimal= false;
@@ -262,6 +304,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
+    /**
+     * Oculta todos los botones y limpia el panel de menú.
+     */
     private void ocultarTodosLosBotones() {
         mostrandoMenuAnimal = false;
         mostrandoMenuHabitat= false;
@@ -274,7 +319,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         panelMenu.repaint();
     }
 
-
+    /**
+     * Desmantela el hábitat actual y reembolsa su valor al jugador.
+     * Solo se puede usar si el hábitat está vacío.
+     */
     private void desmantelarHabitat(){ //SOLO SE PUEDE USAR EN UN HABITAT VACIO
         int valorReembolso = 0;
         if (habitat instanceof Jaula) valorReembolso = $Jaula;
@@ -289,15 +337,26 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         ocultarTodosLosBotones();
     }
 
-
-
+    /**
+     * Verifica si la casilla no tiene hábitat.
+     * @return true si no tiene hábitat, false en caso contrario
+     */
     public boolean noTieneHabitat() {
         return this.habitat == null;
     }
 
+    /**
+     * Verifica si la casilla tiene un animal.
+     * @return true si tiene hábitat y no está vacío, false en caso contrario
+     */
     public boolean tieneAnimal() {
         return this.habitat != null && !this.habitat.estaVacio();
     }
+
+    /**
+     * Ejecuta la acción correspondiente al clic del mouse en la casilla.
+     * @param e Evento del mouse
+     */
     @Override
     public void ejecutarAccion(MouseEvent e) {
 
@@ -326,9 +385,11 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
     }
 
-
-
-
+    /**
+     * Obtiene el texto del tooltip que muestra la información del animal.
+     * @param event Evento del mouse
+     * @return Texto HTML con la información del animal
+     */
     @Override
     public String getToolTipText(MouseEvent event){//MENSAJE CUANDO EL MOUSE PASA POR ENCIMA
         if (noTieneHabitat()) return "Vacio";
@@ -345,6 +406,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
     }
 
+    /**
+     * Dibuja el contenido de la casilla.
+     * @param g Objeto Graphics para dibujar
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -416,16 +481,30 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
             }
         }
     }
+
+    /**
+     * Notifica que las estadísticas del animal han cambiado.
+     * Actualiza la interfaz gráfica.
+     * @param animal El animal que cambió
+     */
     @Override
     public void onEstadisticasCambiadas(Animal animal) {
         this.repaint();
     }
 
+    /**
+     * Notifica que el estado del animal ha cambiado.
+     * Actualiza la interfaz gráfica.
+     * @param animal El animal que cambió
+     */
     @Override
     public void onEstadoCambiado(Animal animal) {
         this.repaint();
     }
 
+    /**
+     * Elimina el observer del animal residente.
+     */
     public void removerObserver() {
         Animal mascota= habitat.getResidente();
         if (mascota != null) {
@@ -433,6 +512,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         }
     }
 
+    /**
+     * Obtiene el hábitat de la casilla.
+     * @return El hábitat actual
+     */
     public Habitat getHabitat() {
         return habitat;
     }

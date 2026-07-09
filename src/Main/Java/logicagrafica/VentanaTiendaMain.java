@@ -5,15 +5,27 @@ import logicatienda.tienda.Tienda;
 import javax.swing.*;
 import java.awt.*;
 
-
-public class ventanaTiendaMain extends JFrame {
+/**
+ * Ventana principal de la tienda de mascotas.
+ * Contiene el mostrador, las casillas y la interfaz principal del juego.
+ */
+public class VentanaTiendaMain extends JFrame {
     public final int width = 1280;
     public final int height = 800;//PROPORCION 8:5
     private Tienda tiendalogica;
     private Mostrador mostrador;
     private JLabel Presupuesto;
     private Runnable actualizarP;
-    public ventanaTiendaMain(){ //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO, SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width y height y volver a ejecutar la virtual machine
+
+    /**
+     * Constructor de la ventana principal.
+     * Inicializa la tienda, el mostrador y las casillas.
+     * NOTA: Esta ventana no tiene ajuste dinámico de resolución.
+     */
+    public VentanaTiendaMain(){
+        //NOTA: ESTA VENTANA NO TIENE AJUSTE DINAMICO DE NINGUN TIPO,
+        // SI SE QUIERE CAMBIAR SU RESOLUCION SE DEBEN CAMBIAR LOS VALORES width
+        // y height y volver a ejecutar la virtual machine
 
         this.setTitle("Tienda Principal");
         this.setSize(width, height); // En caso de querer cambiar la ventana por favor mantener la proporcion de 8:5
@@ -51,21 +63,38 @@ public class ventanaTiendaMain extends JFrame {
 
     }
 
+    /**
+     * Obtiene el alto de la ventana.
+     * @return Alto en píxeles
+     */
     @Override
     public int getHeight() {
         return height;
     }
 
+
+    /**
+     * Obtiene el alto de la ventana.
+     * @return Alto en píxeles
+     */
     @Override
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Punto de entrada principal del juego.
+     * @param args Argumentos de línea de comandos
+     */
     public static void main(String[] args) {
-        ventanaTiendaMain v = new ventanaTiendaMain();
+        VentanaTiendaMain v = new VentanaTiendaMain();
         v.setVisible(true);
     }
 
+    /**
+     * Libera los recursos de la ventana.
+     * Desregistra los observers antes de cerrar para evitar memory leaks.
+     */
     @Override
     public void dispose() {
         // Desregistrar observers antes de cerrar
