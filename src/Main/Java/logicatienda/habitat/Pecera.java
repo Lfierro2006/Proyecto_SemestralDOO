@@ -11,14 +11,4 @@ public class Pecera extends Habitat {
      * Inicializa el hábitat con limpieza al 100% y sin residente.
      */
     public Pecera() { super(); }
-
-    /**
-     * Limpia la pecera.
-     * Restaura el nivel de limpieza al 100%.
-     */
-    @Override
-    public void limpiarHabitat() {
-        this.nivelLimpieza = 100;
-        System.out.println("Se ha cambiado el agua de la pecera.");
-    }
 }

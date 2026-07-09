@@ -9,7 +9,6 @@ import logicatienda.animales.Animal;
  */
 public abstract class Habitat {
 
-    protected int nivelLimpieza;
     protected Animal residente;
 
     /**
@@ -17,17 +16,7 @@ public abstract class Habitat {
      * Inicializa el nivel de limpieza al 100% y no tiene residente.
      */
     public Habitat() {
-        this.nivelLimpieza = 100;
         this.residente = null;
-    }
-
-    /**
-     * Obtiene el nivel de limpieza del hábitat.
-     *
-     * @return Nivel de limpieza (0-100)
-     */
-    public int getNivelLimpieza() {
-        return nivelLimpieza;
     }
 
     /**
@@ -71,31 +60,4 @@ public abstract class Habitat {
         this.residente = null;
     }
 
-    /**
-     * Disminuye el nivel de limpieza del hábitat.
-     * El nivel no puede bajar de 0.
-     *
-     * @param cantidad Cantidad a ensuciar
-     */
-    public void ensuciar(int cantidad) {
-        this.nivelLimpieza -= cantidad;
-        if (this.nivelLimpieza < 0) {
-            this.nivelLimpieza = 0;
-        }
-    }
-
-    /**
-     * Verifica si el hábitat necesita limpieza.
-     *
-     * @return true si el nivel de limpieza es menor a 55, false en caso contrario
-     */
-    public boolean necesitaLimpieza() {
-        return this.nivelLimpieza < 55;
-    }
-
-    /**
-     * Limpia el hábitat.
-     * Cada tipo de hábitat implementa su propia forma de limpieza.
-     */
-    public abstract void limpiarHabitat();
 }

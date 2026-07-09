@@ -11,13 +11,4 @@ public class Jaula extends Habitat {
      */
     public Jaula() { super(); }
 
-    /**
-     * Limpia la jaula.
-     * Restaura el nivel de limpieza al 100%.
-     */
-    @Override
-    public void limpiarHabitat() {
-        this.nivelLimpieza = 100;
-        System.out.println("Se ha limpiado la jaula.");
-    }
 }
