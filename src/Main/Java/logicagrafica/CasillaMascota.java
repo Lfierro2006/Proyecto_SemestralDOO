@@ -3,6 +3,7 @@ import logicatienda.animales.*;
 import logicatienda.observers.AnimalObserver;
 import logicatienda.habitat.*;
 import logicatienda.tienda.Tienda;
+import logicatienda.animales.Estadistica;
 
 import javax.swing.*;
 import java.awt.*;
@@ -340,10 +341,10 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         return "<html>" +
                 "<b>" + mascota.getNombre() + "</b><br>" +
                 "<hr>" + // Una línea divisoria
-                "Felicidad: " + mascota.getNivel(Animal.Estadistica.FELICIDAD) + "/100<br>" +
-                "Saciedad: " + mascota.getNivel(Animal.Estadistica.SACIEDAD) + "/100<br>" +
-                "Higiene: " + mascota.getNivel(Animal.Estadistica.HIGIENE) + "/100<br>" +
-                "Salud: " + mascota.getNivel(Animal.Estadistica.SALUD) + "/100" +
+                "Felicidad: " + mascota.getNivel(Estadistica.FELICIDAD) + "/100<br>" +
+                "Saciedad: " + mascota.getNivel(Estadistica.SACIEDAD) + "/100<br>" +
+                "Higiene: " + mascota.getNivel(Estadistica.HIGIENE) + "/100<br>" +
+                "Salud: " + mascota.getNivel(Estadistica.SALUD) + "/100" +
                 "</html>";
 
     }

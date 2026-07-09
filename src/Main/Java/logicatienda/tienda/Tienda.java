@@ -5,20 +5,21 @@ import java.util.List;
 import logicatienda.animales.*;
 import logicatienda.habitat.*;
 import logicatienda.comprador.Comprador;
+import logicatienda.usuario.*;
 
 public class Tienda {
 
-    private int presupuesto;
     private List<Habitat> espaciosActivos;
     public static final int CAPACIDAD_MAXIMA = 22;
+    private Usuario usuario;
 
-    public Tienda(int presupuestoInicial) {
-        this.presupuesto = presupuestoInicial;
+    public Tienda(int DineroInicial) {
         this.espaciosActivos = new ArrayList<>();
+        this.usuario=new Usuario(DineroInicial);
     }
 
     public int getPresupuesto() {
-        return this.presupuesto;
+        return this.usuario.getDinero();
     }
 
     public List<Habitat> getEspaciosActivos() {
@@ -32,20 +33,18 @@ public class Tienda {
             return false;
         }
 
-        if (this.presupuesto < costo) {
+        if (usuario.getDinero() < costo) {
             System.out.println("No se cuenta con suficiente dinero.");
             return false;
         }
 
-        this.presupuesto -= costo;
+        this.usuario.quitarDinero(costo);
         this.espaciosActivos.add(nuevoHabitat);
 
         System.out.println("Nuevo recinto comprado.");
         return true;
     }
-    public void reembolso(int costo){
-        this.presupuesto+= costo;
-    }
+
     public boolean comprarAnimal(Animal nuevaMascota, Habitat destino, int costo) {
 
         if (!this.espaciosActivos.contains(destino)) {
@@ -58,15 +57,36 @@ public class Tienda {
             return false;
         }
 
-        if (this.presupuesto < costo) {
+        if (this.usuario.getDinero() < costo) {
             System.out.println("Operación fallida: Presupuesto insuficiente para la mascota.");
             return false;
         }
-        this.presupuesto -= costo;
+        this.usuario.quitarDinero(costo);
         destino.alojarAnimal(nuevaMascota);
-
         System.out.println("El animal ha sido ccomprado corretamente.");
         return true;
+    }
+
+    public boolean comprarMedicina(){
+        if(this.usuario.getDinero()<150){
+            return false;
+        }
+        this.usuario.sumarItem(Item.MEDICINA.getIndex());
+        this.usuario.quitarDinero(150);
+        return true;
+    }
+
+    public boolean comprarComida(){
+        if(this.usuario.getDinero()<200){
+            return false;
+        }
+        this.usuario.quitarDinero(200);
+        this.usuario.sumarItem(Item.COMIDA.getIndex());
+        return true;
+    }
+
+    public void reembolso(int costo){
+        this.usuario.darDinero(costo);
     }
 
     public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente) {
@@ -81,15 +101,14 @@ public class Tienda {
         int precioFinalAcordado = cliente.calcularPrecioFinal(mascotaAVender);
 
         if (precioFinalAcordado > 0){
-            this.presupuesto += precioFinalAcordado;
+            this.usuario.darDinero(precioFinalAcordado);
             habitatOcupado.liberarHabitat();
             System.out.println("Venta exitosa");
-
                 return true;
-            }
-
-            System.out.println("Venta cancelada");
-            return false;
-
         }
+
+        System.out.println("Venta cancelada");
+        return false;
+
+    }
 }

@@ -8,19 +8,7 @@ import logicatienda.animales.Animal;
  */
 
 public interface EstadoAnimal {
-    /**
-     * Enum que define los tipos de estado posibles de un animal.
-     */
-    enum Tipo {
-        FELIZ,
-        TRISTE,
-        SACIADO,
-        HAMBRIENTO,
-        SANO,
-        ENFERMO,
-        LIMPIO,
-        SUCIO
-    }
+
     /**
      * Ejecuta el comportamiento asociado al estado.
      * Se llama periódicamente para aplicar efectos continuos.

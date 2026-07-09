@@ -1,7 +1,7 @@
 package logicatienda.animales.estados;
 
 import logicatienda.animales.Animal;
-
+import logicatienda.animales.Estadistica;
 /**
  * Estado que representa a un animal saciado.
  * La saciedad disminuye moderadamente con el tiempo.
@@ -17,12 +17,12 @@ public class Saciado implements EstadoAnimal {
      */
     @Override
     public void ejecutar(Animal animal) {
-        animal.disminuirNivel(Animal.Estadistica.SACIEDAD, 2);
+        animal.disminuirNivel(Estadistica.SACIEDAD, 2);
     }
 
     @Override
-    public EstadoAnimal.Tipo getTipo() {
-        return EstadoAnimal.Tipo.SACIADO;
+    public Tipo getTipo() {
+        return Tipo.SACIADO;
     }
 
     @Override

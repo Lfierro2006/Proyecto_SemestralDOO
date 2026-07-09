@@ -27,31 +27,6 @@ public abstract class Animal {
     protected Map<Estadistica, Integer> estadisticas;
 
     /**
-     * Enum que define las estadísticas de un animal.
-     * Cada estadística tiene un índice para acceso rápido.
-     */
-    public enum Estadistica {
-        FELICIDAD(0),
-        SACIEDAD(1),
-        HIGIENE(2),
-        SALUD(3);
-        private final int indice;
-
-        /**
-         * Obtiene el índice de la estadística.
-         * @return El índice numérico
-         */
-        private Estadistica(int indice){
-            this.indice=indice;
-        }
-
-        public int getIndex() {
-            return indice;
-        }
-
-    }
-
-    /**
      * Constructor de Animal.
      * Inicializa todas las estadísticas al valor inicial y los estados positivos.
      *
@@ -127,7 +102,7 @@ public abstract class Animal {
      * Aplica un bonus adicional según el déficit de saciedad.
      */
     public void Alimentar(){
-        if (!this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)) {
+        if (!this.tieneEstado(Tipo.HAMBRIENTO)) {
             return;
         }
         int hambre = this.getNivel(Estadistica.SACIEDAD);
@@ -138,11 +113,11 @@ public abstract class Animal {
     }
 
     /**
-     * jugar al animal. Solo funciona si no está enfermo ni hambriento.
+     * Jugar con el animal. Solo funciona si no está enfermo ni hambriento.
      * Aplica un bonus adicional según el déficit de felicidad.
      */
     public void Jugar(){
-        if (this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)||this.tieneEstado(EstadoAnimal.Tipo.HAMBRIENTO)){
+        if (this.tieneEstado(Tipo.ENFERMO)||this.tieneEstado(Tipo.HAMBRIENTO)){
             return;
         }
         int felicidad = this.getNivel(Estadistica.SACIEDAD);
@@ -158,7 +133,7 @@ public abstract class Animal {
      * Aplica un bonus adicional según el déficit de higiene.
      */
     public void Limpiar(){
-        if (!this.tieneEstado(EstadoAnimal.Tipo.SUCIO)) {
+        if (!this.tieneEstado(Tipo.SUCIO)) {
             return;
         }
         int higiene=this.getNivel(Estadistica.HIGIENE);
@@ -175,7 +150,7 @@ public abstract class Animal {
      * @param cantidad La cantidad de medicina a aplicar
      */
     public void Curar(int cantidad){
-        if (!this.tieneEstado(EstadoAnimal.Tipo.ENFERMO)) {
+        if (!this.tieneEstado(Tipo.ENFERMO)) {
             return;
         }
         int salud=this.getNivel(Estadistica.SALUD);
@@ -199,7 +174,7 @@ public abstract class Animal {
      * @param tipo El tipo de estado a verificar
      * @return true si tiene el estado, false en caso contrario
      */
-    public boolean tieneEstado(EstadoAnimal.Tipo tipo){
+    public boolean tieneEstado(Tipo tipo){
         for (EstadoAnimal estado : this.estadosActuales){
             if (estado.getTipo() == tipo) {
                 return true;
@@ -258,10 +233,10 @@ public abstract class Animal {
      */
     public boolean[] getTodosLosEstados(){
         return new boolean[]{
-                this.tieneEstado(EstadoAnimal.Tipo.FELIZ),
-                this.tieneEstado(EstadoAnimal.Tipo.SACIADO),
-                this.tieneEstado(EstadoAnimal.Tipo.LIMPIO),
-                this.tieneEstado(EstadoAnimal.Tipo.SANO)
+                this.tieneEstado(Tipo.FELIZ),
+                this.tieneEstado(Tipo.SACIADO),
+                this.tieneEstado(Tipo.LIMPIO),
+                this.tieneEstado(Tipo.SANO)
         };
     }
 
