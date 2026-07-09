@@ -39,7 +39,7 @@ public class VentanaTiendaMain extends JFrame {
         int alto = height/5-7;
         int ancho = width/8-2;
 
-        tiendalogica = new Tienda(30000);
+        tiendalogica = new Tienda(3000);
 
 
         Presupuesto = new JLabel("$" + tiendalogica.getUsuario().getDinero());
