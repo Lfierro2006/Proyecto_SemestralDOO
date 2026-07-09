@@ -1,5 +1,6 @@
 package logicagrafica;
 
+import logicatienda.comprador.Comprador;
 import logicatienda.tienda.Tienda;
 import logicatienda.usuario.Item;
 
@@ -18,7 +19,12 @@ public class Mostrador extends JPanel {
     private JButton btnMonitor3;
     private Tienda tiendaLogica;
     private Runnable actualizarP;
-    //DEBO AÑADIR LA FUNCIONALIDAD DE LOS BOTONES
+
+    private JLabel lblDialogoCliente;
+    private JLabel lblSpriteCliente;
+    private ImageIcon[] spritesClientes;
+    private int turnoClienteActual = 0;
+
     /**
      * Constructor del mostrador.
      * @param x Posición X
@@ -62,7 +68,50 @@ public class Mostrador extends JPanel {
         this.add(btnMonitor1);
         this.add(btnMonitor2);
         this.add(btnMonitor3);
+
+        lblDialogoCliente = new JLabel("");
+        lblDialogoCliente.setFont(new Font("Arial", Font.BOLD, 24));
+        lblDialogoCliente.setForeground(Color.WHITE);
+
+        lblDialogoCliente.setBounds(AN * 3, AL, AN * 3, AL);
+        this.add(lblDialogoCliente);
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (tiendaLogica.getCompradoractual()==null){
+                    Comprador nuevoCliente = new Comprador(1400);
+                    tiendaLogica.setCompradoractual(nuevoCliente);
+                    actualizarLetreroCliente();
+                }
+            }
+        });
+        spritesClientes = new ImageIcon[2];
+
+
+        spritesClientes[0] = cargarImagen("cliente.png", 250, 180);
+        spritesClientes[1] = cargarImagen("cliente1.png", 250, 180);
+        lblSpriteCliente = new JLabel();
+        lblSpriteCliente.setBounds(AN * 3, AL+5, AN*2-70, AL*2-80);
+        this.add(lblSpriteCliente);
+
     }
+    public void actualizarLetreroCliente() {
+        if (tiendaLogica.getCompradoractual() != null) {
+            lblDialogoCliente.setText("¡Hola! Busco un " + tiendaLogica.getCompradoractual().getTipoMascotaDeseada());
+
+            lblSpriteCliente.setIcon(spritesClientes[turnoClienteActual]);
+            turnoClienteActual++;
+            if (turnoClienteActual>1){
+                turnoClienteActual=0;
+            }
+        } else {
+            lblDialogoCliente.setText(""); // Se borra el texto cuando no hay cliente
+            lblSpriteCliente.setIcon(null);
+
+        }
+    }
+
+
 
     /**
      * Carga y redimensiona una imagen desde la carpeta Sprites.

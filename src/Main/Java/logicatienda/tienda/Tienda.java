@@ -17,6 +17,7 @@ public class Tienda {
     private List<Habitat> espaciosActivos;
     public static final int CAPACIDAD_MAXIMA = 22;
     private Usuario usuario;
+    private Comprador compradoractual= null;
 
     /**
      * Constructor de la tienda.
@@ -45,7 +46,7 @@ public class Tienda {
     }
 
     public Usuario getUsuario() {
-        return usuario;
+        return this.usuario;
     }
 
     /**
@@ -140,6 +141,13 @@ public class Tienda {
         this.usuario.darDinero(costo);
     }
 
+    public Comprador getCompradoractual() {
+        return compradoractual;
+    }
+    public void setCompradoractual(Comprador c){
+        this.compradoractual=c;
+    }
+
     /**
      * Vende una mascota a un cliente.
      * Verifica que el hábitat tenga un animal y calcula el precio final con el comprador.
@@ -150,7 +158,7 @@ public class Tienda {
     public boolean venderMascotaACliente(Habitat habitatOcupado, Comprador cliente) {
 
         if (habitatOcupado.estaVacio()) {
-            System.out.println("Error: No hay ningún animal en este recinto para vender.");
+
             return false;
         }
 
@@ -159,7 +167,7 @@ public class Tienda {
         int precioFinalAcordado = cliente.calcularPrecioFinal(mascotaAVender);
 
         if (precioFinalAcordado > 0){
-            this.usuario.darDinero(precioFinalAcordado);
+            this.getUsuario().darDinero(precioFinalAcordado);
             habitatOcupado.liberarHabitat();
             System.out.println("Venta exitosa");
                 return true;
