@@ -77,6 +77,18 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     /**
+     * Sobrescribe el metodo paintComponent para dibujar el contenido de la casilla.
+     * @param g Objeto Graphics para dibujar
+     */
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (!menuManager.isMenuVisible()) {
+            renderer.paintComponent(g);
+        }
+    }
+
+    /**
      * Carga todas las imágenes de alerta.
      */
     private void cargarImagenes() {
