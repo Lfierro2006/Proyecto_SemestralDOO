@@ -127,21 +127,32 @@ public class CasillaRenderer {
             habitatSprite = GPecera;
         }
 
-        if (habitatSprite != null) {
-            g.drawImage(habitatSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+        // Perro, Gato y Ave: hábitat encima del animal
+        if (!(mascota instanceof Pez)) {
+            if (animalSprite != null) {
+                g.drawImage(animalSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+            }
+            if (habitatSprite != null) {
+                g.drawImage(habitatSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+            }
         }
-        if (animalSprite != null) {
-            g.drawImage(animalSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+        // Pez: animal encima del hábitat
+        else {
+            if (habitatSprite != null) {
+                g.drawImage(habitatSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+            }
+            if (animalSprite != null) {
+                g.drawImage(animalSprite.getImage(), 0, 0, casilla.getWidth(), casilla.getHeight(), null);
+            }
         }
     }
 
     /**
      * Dibuja las alertas de estado del animal.
-     *
      * @param g Objeto Graphics para dibujar
      * @param mascota El animal del que se dibujan las alertas
      */
-    private void dibujarAlertas(Graphics g, Animal mascota) {
+     private void dibujarAlertas(Graphics g, Animal mascota) {
         boolean[] estados = mascota.getTodosLosEstados();
         int yIcono = 40;
 
