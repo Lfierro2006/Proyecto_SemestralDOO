@@ -38,20 +38,20 @@ Como autocrítica a considerar es la falta de comunicación entre los integrante
 
 CONTROLES DEL JUEGO
 
--Click izquierdo en casilla vacía → Comprar hábitat (Jaula $200, Cama $180, Pecera $190)
+Click izquierdo en casilla vacía → Comprar hábitat (Jaula $200, Cama $180, Pecera $190)
 
--Click izquierdo en casilla con hábitat vacío → Colocar animal del inventario
+Click izquierdo en casilla con hábitat vacío → Colocar animal del inventario en el hábitat
 
--Click izquierdo en casilla con animal → Menú de acciones (Alimentar, Curar, Limpiar, Jugar)
+Click izquierdo en casilla con animal → Menú de acciones (Alimentar, Curar, Limpiar, Jugar)
 
--Click derecho en casilla con animal → Vender animal (si hay cliente)
+Click derecho en casilla con animal → Vender animal al cliente actual (si hay cliente esperando)
 
--Click derecho en casilla con hábitat vacío → Desmantelar hábitat
+Click derecho en casilla con hábitat vacío → Desmantelar hábitat (recuperas parte del dinero)
 
--Click derecho en cualquier botón → Cerrar menú
+Click derecho en cualquier botón → Cerrar el menú actual
 
--Click en sprite de computador → Tiendas (Animales, Comida, Medicina)
+Click en sprite de computador → Abrir tiendas (Animales, Comida, Medicina)
 
--Click en el mostrador → Generar cliente (IMPORTANTE!)
+Click en el mostrador → Generar un nuevo cliente (¡IMPORTANTE para vender!)
 
--Pasar mouse sobre casilla con animal → Ver estadísticas (tooltip)
+Pasar mouse sobre casilla con animal → Ver estadísticas del animal (tooltip)
