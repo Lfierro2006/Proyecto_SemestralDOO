@@ -59,7 +59,6 @@ public class CasillaMouseHandler extends MouseAdapter {
      */
     private void manejarClicDerecho() {
         if (menuManager.isMenuVisible()) {
-            menuManager.ocultarTodosLosBotones();
             return;
         }
 
