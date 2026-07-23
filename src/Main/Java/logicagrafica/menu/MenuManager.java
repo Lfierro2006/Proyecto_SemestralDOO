@@ -245,10 +245,10 @@ public class MenuManager {
      */
     public void mostrarMenuVender() {
         if (casilla.tieneAnimal()) {
-            ocultarTodosLosBotones();
             mostrandoMenuVender = true;
             panelMenu.removeAll();
             panelMenu.setLayout(new GridLayout(1, 1));
+            panelMenu.setOpaque(true);
             panelMenu.add(btnVender);
             actualizarPanel();
         }
@@ -263,6 +263,7 @@ public class MenuManager {
         mostrandoMenuAñadir = false;
         mostrandoMenuVender = false;
         panelMenu.removeAll();
+        panelMenu.setOpaque(false);
         panelMenu.revalidate();
         panelMenu.repaint();
     }
