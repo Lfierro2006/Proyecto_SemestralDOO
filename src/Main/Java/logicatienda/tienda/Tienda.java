@@ -45,6 +45,10 @@ public class Tienda {
         return this.espaciosActivos;
     }
 
+    /**
+     * Obtiene el usuario de la tienda.
+     * @return El usuario
+     */
     public Usuario getUsuario() {
         return this.usuario;
     }
@@ -148,11 +152,20 @@ public class Tienda {
         this.usuario.darDinero(costo);
     }
 
+    /**
+     * Obtiene el comprador actual que está esperando en el mostrador.
+     * @return El comprador actual, o null si no hay ninguno
+     */
     public Comprador getCompradoractual() {
         return compradoractual;
     }
-    public void setCompradoractual(Comprador c){
-        this.compradoractual=c;
+
+    /**
+     * Establece el comprador actual que espera en el mostrador.
+     * @param c El comprador a establecer
+     */
+    public void setCompradoractual(Comprador c) {
+        this.compradoractual = c;
     }
 
     /**
@@ -177,7 +190,7 @@ public class Tienda {
             this.getUsuario().darDinero(precioFinalAcordado);
             habitatOcupado.liberarHabitat();
             System.out.println("Venta exitosa");
-                return true;
+            return true;
         }
 
         System.out.println("Venta cancelada");

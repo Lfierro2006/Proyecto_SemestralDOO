@@ -101,7 +101,7 @@ public abstract class Animal {
      * Alimenta al animal. Solo funciona si está hambriento.
      * Aplica un bonus adicional según el déficit de saciedad.
      */
-    public void Alimentar(){
+    public void alimentar(){
         if (!this.tieneEstado(Tipo.HAMBRIENTO)) {
             return;
         }
@@ -113,10 +113,10 @@ public abstract class Animal {
     }
 
     /**
-     * Jugar con el animal. Solo funciona si no está enfermo ni hambriento.
+     * jugar con el animal. Solo funciona si no está enfermo ni hambriento.
      * Aplica un bonus adicional según el déficit de felicidad.
      */
-    public void Jugar(){
+    public void jugar(){
         if (this.tieneEstado(Tipo.ENFERMO)||this.tieneEstado(Tipo.HAMBRIENTO)){
             return;
         }
@@ -132,7 +132,7 @@ public abstract class Animal {
      * Limpia al animal. Solo funciona si está sucio.
      * Aplica un bonus adicional según el déficit de higiene.
      */
-    public void Limpiar(){
+    public void limpiar(){
         if (!this.tieneEstado(Tipo.SUCIO)) {
             return;
         }
@@ -149,7 +149,7 @@ public abstract class Animal {
      *
      * @param cantidad La cantidad de medicina a aplicar
      */
-    public void Curar(int cantidad){
+    public void curar(int cantidad){
         if (!this.tieneEstado(Tipo.ENFERMO)) {
             return;
         }

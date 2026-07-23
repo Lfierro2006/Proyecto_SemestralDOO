@@ -29,9 +29,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     private Runnable actualizarP;
     private JPanel panelMenu;
     //  PRECIOS DE LOS HABITATS
-    private final int $Jaula = 200;
-    private final int $cama = 180;
-    private final int $Pecera = 190;
+    private final int PRECIO_JAULA = 200;
+    private final int PRECIO_CAMA = 180;
+    private final int PRECIO_PECERA = 190;
 
     private final String[] listaDeNombres={"Goku","Ezio", "Patata","Zeus", "Pepe", "Grace","Tolosin","Melasa","Robbie", "Roar", "Shrek", "Mahoraga" , "Rafael", "Miguel Angelo", "Donnatelo", "Leonardo", "Platon", "Socrates", "Mario" ,
                             "Silvio", "Haaland", "Talon", "Zilean", "Jarvan", "Geoffrey", "Nilah", "Messi", "Vegetta", "Tito Soto", "Alexis", "Gustavo", "Pedro", "Rene", "Miku", "Majin Boo", "Fernanfloo", "Felipe", "Nestle","Corxea", "Bond",  "Braviary", "John Doe", "Jane Doe",
@@ -95,8 +95,8 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         btnMedicina = new JButton("Dar Medicina: " +this.tiendaLogica.getUsuario().getCantItem(Item.MEDICINA.getIndex()), cargarImagen("darMed.png",30,30));
         btnAlimentar = new JButton("Alimentar: "+this.tiendaLogica.getUsuario().getCantItem(Item.COMIDA.getIndex()), cargarImagen("darComida.png", 30, 30));
-        btnLimpiar = new JButton("Limpiar Habitat", cargarImagen("limpiar.png", 30, 30));
-        btnJugar = new JButton("Jugar", cargarImagen("jugar.png", 30, 30 ));
+        btnLimpiar = new JButton("limpiar Habitat", cargarImagen("limpiar.png", 30, 30));
+        btnJugar = new JButton("jugar", cargarImagen("jugar.png", 30, 30 ));
 
         java.awt.event.MouseAdapter detectorClicDerecho = new java.awt.event.MouseAdapter() {
             @Override
@@ -114,9 +114,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnBuyPecera.addMouseListener(detectorClicDerecho);
         btnBuyCama.addMouseListener(detectorClicDerecho);
 
-        btnBuyJaula.addActionListener(e -> intentarComprarHabitat(new Jaula(), $Jaula));
-        btnBuyPecera.addActionListener(e -> intentarComprarHabitat(new Pecera(), $Pecera));
-        btnBuyCama.addActionListener(e -> intentarComprarHabitat(new Cama(), $cama));
+        btnBuyJaula.addActionListener(e -> intentarComprarHabitat(new Jaula(), PRECIO_JAULA));
+        btnBuyPecera.addActionListener(e -> intentarComprarHabitat(new Pecera(), PRECIO_PECERA));
+        btnBuyCama.addActionListener(e -> intentarComprarHabitat(new Cama(), PRECIO_CAMA));
 
         //BOTONES PARA AÑADIR ANIMALES YA COMPRADOS AL HABITAT
 
@@ -128,7 +128,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAñadirPerro.addActionListener(e -> {
             if (tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex())>0){
                 tiendaLogica.getUsuario().restarItem(Item.PERRO.getIndex());
-                intentarComprarAnimal(new Perro(RandomName()),0);
+                intentarComprarAnimal(new Perro(randomName()),0);
                 if(actualizarP!=null)actualizarP.run();
             }
             else{
@@ -138,7 +138,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAñadirGato.addActionListener(e -> {
             if (tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex())>0){
                 tiendaLogica.getUsuario().restarItem(Item.GATO.getIndex());
-                intentarComprarAnimal(new Gato(RandomName()),0);
+                intentarComprarAnimal(new Gato(randomName()),0);
             }
             else{
                 System.out.println("No hay tal animal disponible");
@@ -147,7 +147,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAñadirAve.addActionListener(e -> {
             if (tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex())>0){
                 tiendaLogica.getUsuario().restarItem(Item.AVE.getIndex());
-                intentarComprarAnimal(new Ave(RandomName()),0);
+                intentarComprarAnimal(new Ave(randomName()),0);
             }
             else{
                 System.out.println("No hay tal animal disponible");
@@ -156,7 +156,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAñadirPez.addActionListener(e -> {
             if (tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex())>0){
                 tiendaLogica.getUsuario().restarItem(Item.PEZ.getIndex());
-                intentarComprarAnimal(new Pez(RandomName()),0);
+                intentarComprarAnimal(new Pez(randomName()),0);
             }
             else{
                 System.out.println("No hay tal animal disponible");
@@ -192,7 +192,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnMedicina.addActionListener(e -> {if(tieneAnimal()){
             int medicina = Item.MEDICINA.getIndex();
             if(tiendaLogica.getUsuario().getCantItem(medicina)>0){
-            this.habitat.getResidente().Curar(40);
+            this.habitat.getResidente().curar(40);
             tiendaLogica.getUsuario().restarItem(medicina);
             }
             else{
@@ -205,7 +205,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         btnAlimentar.addActionListener(e -> {if(tieneAnimal()){
             int comida = Item.COMIDA.getIndex();
             if (tiendaLogica.getUsuario().getCantItem(comida)> 0){
-                this.habitat.getResidente().Alimentar();
+                this.habitat.getResidente().alimentar();
                 tiendaLogica.getUsuario().restarItem(comida);
             }
             else{
@@ -214,8 +214,8 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         }
 
             ocultarTodosLosBotones();});
-        btnLimpiar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().Limpiar(); ocultarTodosLosBotones();});
-        btnJugar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().Jugar(); ocultarTodosLosBotones();});
+        btnLimpiar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().limpiar(); ocultarTodosLosBotones();});
+        btnJugar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().jugar(); ocultarTodosLosBotones();});
 
         ocultarTodosLosBotones();
     }
@@ -247,7 +247,7 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
      *
      * @return Nombre aleatorio de la lista predefinida
      */
-    private String RandomName(){
+    private String randomName(){
         int Aleatorio = (int)(Math.random() * listaDeNombres.length);
         return listaDeNombres[Aleatorio];
     }
@@ -473,9 +473,9 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
      */
     private void desmantelarHabitat(){ //SOLO SE PUEDE USAR EN UN HABITAT VACIO
         int valorReembolso = 0;
-        if (habitat instanceof Jaula) valorReembolso = $Jaula;
-        else if (habitat instanceof Pecera) valorReembolso= $Pecera;
-        else if (habitat instanceof Cama) valorReembolso= $cama;
+        if (habitat instanceof Jaula) valorReembolso = PRECIO_JAULA;
+        else if (habitat instanceof Pecera) valorReembolso= PRECIO_PECERA;
+        else if (habitat instanceof Cama) valorReembolso= PRECIO_CAMA;
 
         tiendaLogica.reembolso(valorReembolso);
         tiendaLogica.getEspaciosActivos().remove(habitat);

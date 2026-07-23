@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Clase de pruebas unitarias para la clase abstracta Animal.
  * Verifica el correcto funcionamiento de todas las estadísticas, estados
- * y métodos de interacción (Alimentar, Jugar, Limpiar, Curar).
+ * y métodos de interacción (Alimentar, jugar, limpiar, curar).
  */
 class AnimalTest {
 
@@ -89,7 +89,7 @@ class AnimalTest {
         assertTrue(perro.tieneEstado(Tipo.HAMBRIENTO));
         int saciedadInicial = perro.getNivel(Estadistica.SACIEDAD);
 
-        perro.Alimentar();
+        perro.alimentar();
 
         assertTrue(perro.getNivel(Estadistica.SACIEDAD) > saciedadInicial);
         assertTrue(perro.getNivel(Estadistica.FELICIDAD) > 85);
@@ -105,24 +105,24 @@ class AnimalTest {
         assertFalse(perro.tieneEstado(Tipo.HAMBRIENTO));
         int saciedadInicial = perro.getNivel(Estadistica.SACIEDAD);
 
-        perro.Alimentar();
+        perro.alimentar();
 
         assertEquals(saciedadInicial, perro.getNivel(Estadistica.SACIEDAD));
     }
 
     /**
-     * Verifica que el método Jugar solo funciona cuando el animal
+     * Verifica que el método jugar solo funciona cuando el animal
      * no está enfermo ni hambriento, aumentando la felicidad y
      * disminuyendo la saciedad e higiene.
      */
     @Test
-    @DisplayName("Jugar funciona solo cuando no está enfermo ni hambriento")
+    @DisplayName("jugar funciona solo cuando no está enfermo ni hambriento")
     void testJugarSoloCuandoNoEnfermoNiHambriento() {
         assertFalse(perro.tieneEstado(Tipo.ENFERMO));
         assertFalse(perro.tieneEstado(Tipo.HAMBRIENTO));
         int felicidadInicial = perro.getNivel(Estadistica.FELICIDAD);
 
-        perro.Jugar();
+        perro.jugar();
 
         assertTrue(perro.getNivel(Estadistica.FELICIDAD) > felicidadInicial);
         assertEquals(75, perro.getNivel(Estadistica.SACIEDAD));
@@ -130,97 +130,97 @@ class AnimalTest {
     }
 
     /**
-     * Verifica que el método Jugar no tenga efecto si el animal
+     * Verifica que el método jugar no tenga efecto si el animal
      * está en estado ENFERMO.
      */
     @Test
-    @DisplayName("Jugar no funciona si el animal está enfermo")
+    @DisplayName("jugar no funciona si el animal está enfermo")
     void testJugarNoFuncionaSiEnfermo() {
         perro.disminuirNivel(Estadistica.SALUD, 30);
         assertTrue(perro.tieneEstado(Tipo.ENFERMO));
         int felicidadInicial = perro.getNivel(Estadistica.FELICIDAD);
 
-        perro.Jugar();
+        perro.jugar();
 
         assertEquals(felicidadInicial, perro.getNivel(Estadistica.FELICIDAD));
     }
 
     /**
-     * Verifica que el método Jugar no tenga efecto si el animal
+     * Verifica que el método jugar no tenga efecto si el animal
      * está en estado HAMBRIENTO.
      */
     @Test
-    @DisplayName("Jugar no funciona si el animal está hambriento")
+    @DisplayName("jugar no funciona si el animal está hambriento")
     void testJugarNoFuncionaSiHambriento() {
         perro.disminuirNivel(Estadistica.SACIEDAD, 30);
         assertTrue(perro.tieneEstado(Tipo.HAMBRIENTO));
         int felicidadInicial = perro.getNivel(Estadistica.FELICIDAD);
 
-        perro.Jugar();
+        perro.jugar();
 
         assertEquals(felicidadInicial, perro.getNivel(Estadistica.FELICIDAD));
     }
 
     /**
-     * Verifica que el método Limpiar solo funciona cuando el animal
+     * Verifica que el método limpiar solo funciona cuando el animal
      * está en estado SUCIO, aumentando la higiene y la salud.
      */
     @Test
-    @DisplayName("Limpiar funciona solo cuando el animal está sucio")
+    @DisplayName("limpiar funciona solo cuando el animal está sucio")
     void testLimpiarSoloCuandoSucio() {
         perro.disminuirNivel(Estadistica.HIGIENE, 35);
         assertTrue(perro.tieneEstado(Tipo.SUCIO));
         int higieneInicial = perro.getNivel(Estadistica.HIGIENE);
 
-        perro.Limpiar();
+        perro.limpiar();
 
         assertTrue(perro.getNivel(Estadistica.HIGIENE) > higieneInicial);
         assertEquals(95, perro.getNivel(Estadistica.SALUD));
     }
 
     /**
-     * Verifica que el método Limpiar no tenga efecto si el animal
+     * Verifica que el método limpiar no tenga efecto si el animal
      * no está en estado SUCIO.
      */
     @Test
-    @DisplayName("Limpiar no hace nada si el animal no está sucio")
+    @DisplayName("limpiar no hace nada si el animal no está sucio")
     void testLimpiarNoHaceNadaSiNoEstaSucio() {
         assertFalse(perro.tieneEstado(Tipo.SUCIO));
         int higieneInicial = perro.getNivel(Estadistica.HIGIENE);
 
-        perro.Limpiar();
+        perro.limpiar();
 
         assertEquals(higieneInicial, perro.getNivel(Estadistica.HIGIENE));
     }
 
     /**
-     * Verifica que el método Curar solo funciona cuando el animal
+     * Verifica que el método curar solo funciona cuando el animal
      * está en estado ENFERMO, aumentando la salud y disminuyendo la felicidad.
      */
     @Test
-    @DisplayName("Curar funciona solo cuando el animal está enfermo")
+    @DisplayName("curar funciona solo cuando el animal está enfermo")
     void testCurarSoloCuandoEnfermo() {
         perro.disminuirNivel(Estadistica.SALUD, 30);
         assertTrue(perro.tieneEstado(Tipo.ENFERMO));
         int saludInicial = perro.getNivel(Estadistica.SALUD);
 
-        perro.Curar(40);
+        perro.curar(40);
 
         assertTrue(perro.getNivel(Estadistica.SALUD) > saludInicial);
         assertEquals(80, perro.getNivel(Estadistica.FELICIDAD));
     }
 
     /**
-     * Verifica que el método Curar no tenga efecto si el animal
+     * Verifica que el método curar no tenga efecto si el animal
      * no está en estado ENFERMO.
      */
     @Test
-    @DisplayName("Curar no hace nada si el animal no está enfermo")
+    @DisplayName("curar no hace nada si el animal no está enfermo")
     void testCurarNoHaceNadaSiNoEstaEnfermo() {
         assertFalse(perro.tieneEstado(Tipo.ENFERMO));
         int saludInicial = perro.getNivel(Estadistica.SALUD);
 
-        perro.Curar(40);
+        perro.curar(40);
 
         assertEquals(saludInicial, perro.getNivel(Estadistica.SALUD));
     }
