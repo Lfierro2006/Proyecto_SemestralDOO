@@ -1,11 +1,14 @@
 package logicagrafica;
-import logicatienda.animales.*;
-import logicatienda.comprador.Comprador;
+
+import logicagrafica.menu.MenuManager;
+import logicagrafica.render.CasillaRenderer;
+import logicagrafica.handler.CasillaMouseHandler;
+import logicatienda.animales.Animal;
 import logicatienda.observers.AnimalObserver;
+import logicatienda.animales.Estadistica;
+import logicatienda.comprador.Comprador;
 import logicatienda.habitat.*;
 import logicatienda.tienda.Tienda;
-import logicatienda.animales.Estadistica;
-import logicatienda.usuario.Item;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,35 +16,34 @@ import java.awt.event.MouseEvent;
 
 /**
  * Representa una casilla individual en el mostrador de la tienda.
- * Puede contener un hábitat y un animal, y permite interactuar con ambos.
+ * Actúa como contenedor y coordinador de los diferentes componentes.
  * Implementa AnimalObserver para recibir notificaciones de cambios en el animal.
  */
 public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
+
     private Habitat habitat;
     private Tienda tiendaLogica;
-    private JButton btnMedicina , btnAlimentar, btnLimpiar, btnJugar;
-    private ImageIcon alertaHambre, alertaSucio, alertaTriste, alertaEnfermo;
-    private ImageIcon GCama, GJaula, GPecera, GPerro, GGato, GAve, GPez; //G de Grafico
-    private JButton btnBuyJaula, btnBuyCama, btnBuyPecera;
-    private JButton btnAñadirPerro, btnAñadirGato, btnAñadirAve, btnAñadirPez, btnVender;
-    private boolean mostrandoMenuVender = false;
-    // Animal mascota = habitat.getResidente();
     private Runnable actualizarP;
-    private JPanel panelMenu;
-    //  PRECIOS DE LOS HABITATS
+
+    private MenuManager menuManager;
+    private CasillaRenderer renderer;
+    private CasillaMouseHandler mouseHandler;
+
+    private ImageIcon alertaHambre, alertaSucio, alertaTriste, alertaEnfermo;
+
     private final int PRECIO_JAULA = 200;
     private final int PRECIO_CAMA = 180;
     private final int PRECIO_PECERA = 190;
 
-    private final String[] listaDeNombres={"Goku","Ezio", "Patata","Zeus", "Pepe", "Grace","Tolosin","Melasa","Robbie", "Roar", "Shrek", "Mahoraga" , "Rafael", "Miguel Angelo", "Donnatelo", "Leonardo", "Platon", "Socrates", "Mario" ,
-                            "Silvio", "Haaland", "Talon", "Zilean", "Jarvan", "Geoffrey", "Nilah", "Messi", "Vegetta", "Tito Soto", "Alexis", "Gustavo", "Pedro", "Rene", "Miku", "Majin Boo", "Fernanfloo", "Felipe", "Nestle","Corxea", "Bond",  "Braviary", "John Doe", "Jane Doe",
-                            "Cupcake","Petrus", "Honda", "Daniel", "El Tata", "Frederickson", "Teao", "Chipp", "Agnes"};
-
-    private boolean mostrandoMenuAnimal = false;
-    private boolean mostrandoMenuHabitat = false; //Menu para comprar habitats
-    private boolean mostrandoMenuCama= false;
-    private boolean mostrandoMenuPescera = false;
-    private boolean mostrandoMenuJaula = false;
+    private final String[] listaDeNombres = {
+            "Goku","Ezio", "Patata","Zeus", "Pepe", "Grace","Tolosin","Melasa","Robbie", "Roar",
+            "Shrek", "Mahoraga" , "Rafael", "Miguel Angelo", "Donnatelo", "Leonardo", "Platon",
+            "Socrates", "Mario", "Silvio", "Haaland", "Talon", "Zilean", "Jarvan", "Geoffrey",
+            "Nilah", "Messi", "Vegetta", "Tito Soto", "Alexis", "Gustavo", "Pedro", "Rene",
+            "Miku", "Majin Boo", "Fernanfloo", "Felipe", "Nestle","Corxea", "Bond", "Braviary",
+            "John Doe", "Jane Doe", "Cupcake","Petrus", "Honda", "Daniel", "El Tata",
+            "Frederickson", "Teao", "Chipp", "Agnes"
+    };
 
     /**
      * Constructor de la casilla.
@@ -53,243 +55,128 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
      * @param tienda Referencia a la tienda lógica
      * @param actualizarP Runnable para actualizar la interfaz
      */
-    public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda, Runnable actualizarP){
-        super(x,y,ancho,alto, "");
-        this.habitat=habitat;
-        this.tiendaLogica= tienda;
-        this.actualizarP=actualizarP;
+    public CasillaMascota(int x, int y, int ancho, int alto, Habitat habitat, Tienda tienda, Runnable actualizarP) {
+        super(x, y, ancho, alto, "");
+        this.habitat = habitat;
+        this.tiendaLogica = tienda;
+        this.actualizarP = actualizarP;
+        cargarImagenes();
+
         if (this.habitat != null && !this.habitat.estaVacio()) {
             this.habitat.getResidente().addObserver(this);
         }
 
-        GCama =cargarImagen("cama.png",160,160);
-        GPecera =cargarImagen("pescera.png",160,160);
-        GJaula = cargarImagen("Jaula.png",160,160);
-        GGato = cargarImagen("gato.png",100,100);
-        GPerro = cargarImagen("perro.png", 100,100);
-        GAve = cargarImagen("ave.png", 100,100);
-        GPez = cargarImagen("Pezp.png",100,100);
-
-
-        alertaEnfermo= cargarImagen("alertaSal.png",15,15);
-        alertaHambre= cargarImagen("alertaHam.png",15,15);
-        alertaSucio = cargarImagen("alertaHig.png", 15 , 15);
-        alertaTriste = cargarImagen("alertaFel.png", 15, 15);
-
-
         this.setLayout(new BorderLayout());
-        panelMenu = new JPanel();
-        panelMenu.setOpaque(false);
-        this.add(panelMenu, BorderLayout.CENTER);
 
-        btnVender = new JButton("Vender Animal");
+        this.menuManager = new MenuManager(this, tienda, actualizarP);
+        this.renderer = new CasillaRenderer(this);
+        this.mouseHandler = new CasillaMouseHandler(this, menuManager);
 
-        btnBuyJaula = new JButton("Jaula ($200)", cargarImagen("Jaula.png", 40 , 40));
-        btnBuyPecera = new JButton("Pecera ($190)", cargarImagen("pescera.png",30,30));
-        btnBuyCama = new JButton("Cama ($180)", cargarImagen("cama.png", 40, 40));
-
-        btnAñadirPerro= new JButton("Perro: "+this.tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()), cargarImagen("perro.png",40,40));
-        btnAñadirGato= new JButton("Gato: "+this.tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex()), cargarImagen("gato.png",40,40));
-        btnAñadirAve= new JButton("Ave: "+this.tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()), cargarImagen("ave.png",40,40));
-        btnAñadirPez= new JButton("Pez: "+this.tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()), cargarImagen("Pezp.png",40,40));
-
-        btnMedicina = new JButton("Dar Medicina: " +this.tiendaLogica.getUsuario().getCantItem(Item.MEDICINA.getIndex()), cargarImagen("darMed.png",30,30));
-        btnAlimentar = new JButton("Alimentar: "+this.tiendaLogica.getUsuario().getCantItem(Item.COMIDA.getIndex()), cargarImagen("darComida.png", 30, 30));
-        btnLimpiar = new JButton("limpiar Habitat", cargarImagen("limpiar.png", 30, 30));
-        btnJugar = new JButton("jugar", cargarImagen("jugar.png", 30, 30 ));
-
-        java.awt.event.MouseAdapter detectorClicDerecho = new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // Si el clic que recibió el botón fue el derecho
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    ocultarTodosLosBotones(); //
-                }
-            }
-        };
-
-
-        //BOTONES PARA EL MENU PARA COMPRAR EL HABITAT
-        btnBuyJaula.addMouseListener(detectorClicDerecho);
-        btnBuyPecera.addMouseListener(detectorClicDerecho);
-        btnBuyCama.addMouseListener(detectorClicDerecho);
-
-        btnBuyJaula.addActionListener(e -> intentarComprarHabitat(new Jaula(), PRECIO_JAULA));
-        btnBuyPecera.addActionListener(e -> intentarComprarHabitat(new Pecera(), PRECIO_PECERA));
-        btnBuyCama.addActionListener(e -> intentarComprarHabitat(new Cama(), PRECIO_CAMA));
-
-        //BOTONES PARA AÑADIR ANIMALES YA COMPRADOS AL HABITAT
-
-        btnAñadirPerro.addMouseListener(detectorClicDerecho);
-        btnAñadirGato.addMouseListener(detectorClicDerecho);
-        btnAñadirAve.addMouseListener(detectorClicDerecho);
-        btnAñadirPez.addMouseListener(detectorClicDerecho);
-
-        btnAñadirPerro.addActionListener(e -> {
-            if (tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex())>0){
-                tiendaLogica.getUsuario().restarItem(Item.PERRO.getIndex());
-                intentarComprarAnimal(new Perro(randomName()),0);
-                if(actualizarP!=null)actualizarP.run();
-            }
-            else{
-                System.out.println("No hay tal animal disponible");
-            }
-        });
-        btnAñadirGato.addActionListener(e -> {
-            if (tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex())>0){
-                tiendaLogica.getUsuario().restarItem(Item.GATO.getIndex());
-                intentarComprarAnimal(new Gato(randomName()),0);
-            }
-            else{
-                System.out.println("No hay tal animal disponible");
-            }
-        });
-        btnAñadirAve.addActionListener(e -> {
-            if (tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex())>0){
-                tiendaLogica.getUsuario().restarItem(Item.AVE.getIndex());
-                intentarComprarAnimal(new Ave(randomName()),0);
-            }
-            else{
-                System.out.println("No hay tal animal disponible");
-            }
-        });
-        btnAñadirPez.addActionListener(e -> {
-            if (tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex())>0){
-                tiendaLogica.getUsuario().restarItem(Item.PEZ.getIndex());
-                intentarComprarAnimal(new Pez(randomName()),0);
-            }
-            else{
-                System.out.println("No hay tal animal disponible");
-            }
-        });
-
-        //BOTON PARA VENDER ANIMALES
-        btnVender.addActionListener(e -> {
-            Comprador cliente = tiendaLogica.getCompradoractual();
-
-            if (cliente != null) {
-
-                boolean exito = tiendaLogica.venderMascotaACliente(this.habitat, cliente);
-
-                if (exito) {
-                    tiendaLogica.setCompradoractual(null);
-                    if (actualizarP != null) actualizarP.run(); // Actualiza dinero y borra el texto del mostrador
-                } else {
-                    System.out.println("No es la especie que busca, o está en muy mal estado.");
-                }
-            } else {
-                System.out.println("No hay ningún cliente esperando en el mostrador.");
-            }
-            ocultarTodosLosBotones();
-        });
-
-        //BOTONES PARA INTERACTUAR CON EL ANIMAL DEL HABITAT YA PUESTO
-        btnMedicina.addMouseListener(detectorClicDerecho);
-        btnAlimentar.addMouseListener(detectorClicDerecho);
-        btnLimpiar.addMouseListener(detectorClicDerecho);
-        btnJugar.addMouseListener(detectorClicDerecho);
-
-        btnMedicina.addActionListener(e -> {if(tieneAnimal()){
-            int medicina = Item.MEDICINA.getIndex();
-            if(tiendaLogica.getUsuario().getCantItem(medicina)>0){
-            this.habitat.getResidente().curar(40);
-            tiendaLogica.getUsuario().restarItem(medicina);
-            }
-            else{
-                System.out.println("No tienes existencias");
-            }
-
-        }
-        ocultarTodosLosBotones();
-        });
-        btnAlimentar.addActionListener(e -> {if(tieneAnimal()){
-            int comida = Item.COMIDA.getIndex();
-            if (tiendaLogica.getUsuario().getCantItem(comida)> 0){
-                this.habitat.getResidente().alimentar();
-                tiendaLogica.getUsuario().restarItem(comida);
-            }
-            else{
-                System.out.println("El Animal no esta hambriento o no tienes existencias");
-            }
-        }
-
-            ocultarTodosLosBotones();});
-        btnLimpiar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().limpiar(); ocultarTodosLosBotones();});
-        btnJugar.addActionListener(e -> {if(tieneAnimal()) this.habitat.getResidente().jugar(); ocultarTodosLosBotones();});
-
-        ocultarTodosLosBotones();
+        this.add(menuManager.getPanelMenu(), BorderLayout.CENTER);
+        this.addMouseListener(mouseHandler);
     }
 
     /**
-     * Metodo ayudante para cargar y redimensionar iconos de forma segura
-     * @param nombreArchivo El nombre de la imagen (ej. "carne.png").
-     * @param ancho El ancho deseado en píxeles.
-     * @param alto El alto deseado en píxeles.
-     * @return El ImageIcon listo para usar, o un icono vacío si falla.
+     * Carga todas las imágenes de alerta.
      */
-    private ImageIcon cargarImagen(String nombreArchivo, int ancho, int alto){
-        //Buscar la imagen
+    private void cargarImagenes() {
+        alertaEnfermo = cargarImagen("alertaSal.png", 15, 15);
+        alertaHambre = cargarImagen("alertaHam.png", 15, 15);
+        alertaSucio = cargarImagen("alertaHig.png", 15, 15);
+        alertaTriste = cargarImagen("alertaFel.png", 15, 15);
+    }
+
+    /**
+     * Carga y redimensiona una imagen desde la carpeta Sprites.
+     * @param nombreArchivo Nombre del archivo de imagen
+     * @param ancho Ancho deseado en píxeles
+     * @param alto Alto deseado en píxeles
+     * @return ImageIcon redimensionado, o un icono vacío si falla
+     */
+    private ImageIcon cargarImagen(String nombreArchivo, int ancho, int alto) {
         java.net.URL urlImagen = getClass().getResource("Sprites/" + nombreArchivo);
-        //Cargar la imagen y ajustar el tamaño
         if (urlImagen != null) {
             ImageIcon spriteOriginal = new ImageIcon(urlImagen);
             Image spriteEscalado = spriteOriginal.getImage().getScaledInstance(ancho, alto, Image.SCALE_DEFAULT);
             return new ImageIcon(spriteEscalado);
-        }
-        else{ //en caso de no cargar
-            System.out.println("NO SE ENCONTRO EL SPRITE" + nombreArchivo);
+        } else {
+            System.out.println("NO SE ENCONTRO EL SPRITE: " + nombreArchivo);
             return new ImageIcon();
         }
     }
 
     /**
      * Genera un nombre aleatorio para un animal.
-     *
      * @return Nombre aleatorio de la lista predefinida
      */
-    private String randomName(){
-        int Aleatorio = (int)(Math.random() * listaDeNombres.length);
-        return listaDeNombres[Aleatorio];
+    public String generarNombreAleatorio() {
+        int aleatorio = (int)(Math.random() * listaDeNombres.length);
+        return listaDeNombres[aleatorio];
+    }
+
+    /**
+     * Muestra el menú de compra de hábitats.
+     */
+    public void mostrarMenuHabitat() {
+        menuManager.mostrarMenuHabitat();
+    }
+
+    /**
+     * Muestra el menú de interacción con el animal.
+     */
+    public void mostrarMenuAnimal() {
+        menuManager.mostrarMenuAnimal();
+    }
+
+    /**
+     * Muestra el menú para añadir animales al hábitat.
+     */
+    public void mostrarMenuAñadirAnimal() {
+        menuManager.mostrarMenuAñadirAnimal();
+    }
+
+    /**
+     * Muestra el menú de venta de animales.
+     */
+    public void mostrarMenuVender() {
+        menuManager.mostrarMenuVender();
+    }
+
+    /**
+     * Oculta todos los botones y menús.
+     */
+    public void ocultarTodosLosBotones() {
+        menuManager.ocultarTodosLosBotones();
     }
 
     /**
      * Intenta comprar un hábitat y colocarlo en la casilla.
-     * Verifica que haya suficiente dinero y que la tienda lo permita.
-     *
      * @param nuevoHabitat El hábitat a comprar
      * @param costo Costo del hábitat
      */
-    private void intentarComprarHabitat(Habitat nuevoHabitat, int costo) {
-        //Comprobacion si se pudo comprar o no
+    public void intentarComprarHabitat(Habitat nuevoHabitat, int costo) {
         boolean compraExitosa = tiendaLogica.comprarHabitat(nuevoHabitat, costo);
-
         if (compraExitosa) {
-            this.habitat = nuevoHabitat; // La casilla ahora es dueña de este hábitat
+            this.habitat = nuevoHabitat;
             System.out.println("Hábitat instalado en esta casilla.");
-            if (this.actualizarP != null) {
-                this.actualizarP.run();
-            }
+            if (this.actualizarP != null) this.actualizarP.run();
         } else {
             System.out.println("No se pudo comprar el hábitat (falta dinero).");
-
         }
-
-        ocultarTodosLosBotones(); // Redibuja la casilla con su nuevo estado
+        ocultarTodosLosBotones();
     }
 
     /**
-     * Intenta comprar un animal y alojarlo en el hábitat de la casilla.
-     * Verifica que el hábitat exista, esté vacío y sea compatible con el animal.
+     * Intenta comprar un animal y alojarlo en el hábitat.
      * @param nuevoAnimal El animal a comprar
      * @param costo Costo del animal
      */
-    private void intentarComprarAnimal(Animal nuevoAnimal, int costo) {
+    public void intentarComprarAnimal(Animal nuevoAnimal, int costo) {
         if (this.habitat == null) {
             System.out.println("Error: No hay hábitat en esta casilla.");
             ocultarTodosLosBotones();
             return;
         }
-
         if (!this.habitat.estaVacio()) {
             System.out.println("Error: El hábitat ya está ocupado.");
             ocultarTodosLosBotones();
@@ -302,187 +189,117 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
         }
 
         boolean compraExitosa = tiendaLogica.comprarAnimal(nuevoAnimal, this.habitat, costo);
-
         if (compraExitosa) {
             nuevoAnimal.addObserver(this);
             System.out.println("Animal comprado y alojado con éxito");
             if (this.actualizarP != null) actualizarP.run();
         }
-
         ocultarTodosLosBotones();
-    }
-
-    /**
-     * Muestra los botones para comprar hábitats.
-     */
-    private void mostrarBotonesHabitat() {
-        mostrandoMenuHabitat = true;
-        mostrandoMenuAnimal = false;
-        mostrandoMenuCama= false;
-        mostrandoMenuPescera = false;
-        mostrandoMenuJaula = false;
-        mostrandoMenuVender= false;
-        //Vaciar cualquier boton previo por si acaso
-        panelMenu.removeAll();
-        //formar las filas para los botones
-        panelMenu.setLayout(new GridLayout(3, 1, 0, 1));
-        //Se añaden los botones
-        panelMenu.add(btnBuyJaula);
-        panelMenu.add(btnBuyPecera);
-        panelMenu.add(btnBuyCama);
-        //Se actualiza
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    /**
-     * Muestra los botones para interactuar con el animal.
-     */
-    private void mostrarBotonesAnimal() {
-        mostrandoMenuHabitat = false;
-        mostrandoMenuAnimal = true;
-        mostrandoMenuCama= false;
-        mostrandoMenuPescera = false;
-        mostrandoMenuJaula = false;
-        mostrandoMenuVender= false;
-        panelMenu.removeAll();
-
-        panelMenu.setLayout(new GridLayout(4, 1, 0, 1));
-        btnMedicina.setText("Dar Medicina: " + tiendaLogica.getUsuario().getCantItem(Item.MEDICINA.getIndex()));
-        btnAlimentar.setText("Alimentar: " + tiendaLogica.getUsuario().getCantItem(Item.COMIDA.getIndex()));
-        panelMenu.add(btnMedicina);
-        panelMenu.add(btnAlimentar);
-        panelMenu.add(btnLimpiar);
-        panelMenu.add(btnJugar);
-
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    /**
-     * Muestra los botones para añadir animales a una cama (perros y gatos).
-     * Solo muestra animales compatibles con el hábitat.
-     */
-    private void mostrarBotonesAñadirCama(){
-        mostrandoMenuVender = false;
-        mostrandoMenuAnimal = false;
-        mostrandoMenuHabitat = false;
-        mostrandoMenuCama = true;
-        mostrandoMenuPescera = false;
-        mostrandoMenuJaula = false;
-
-        panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(0, 1, 0, 1));
-
-        // Verificar compatibilidad con el hábitat
-        if (this.habitat.esCompatible(new Perro(""))) {
-            btnAñadirPerro.setText("Perro: " + tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()));
-            panelMenu.add(btnAñadirPerro);
-        }
-
-        if (this.habitat.esCompatible(new Gato(""))) {
-            btnAñadirGato.setText("Gato: " + tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex()));
-            panelMenu.add(btnAñadirGato);
-        }
-
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    /**
-     * Muestra los botones para añadir animales a una pecera (solo peces).
-     * Solo muestra animales compatibles con el hábitat.
-     */
-    private void mostrarBotonesAñadirPez(){
-        mostrandoMenuVender = false;
-        mostrandoMenuAnimal = false;
-        mostrandoMenuHabitat = false;
-        mostrandoMenuCama = false;
-        mostrandoMenuPescera = true;
-        mostrandoMenuJaula = false;
-
-        panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(1, 1, 0, 1));
-
-        // Verificar compatibilidad con el hábitat
-        if (this.habitat.esCompatible(new Pez(""))) {
-            btnAñadirPez.setText("Pez: " + tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()));
-            panelMenu.add(btnAñadirPez);
-        }
-
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    /**
-     * Muestra los botones para añadir animales a una jaula (solo aves).
-     * Solo muestra animales compatibles con el hábitat.
-     */
-    private void mostrarBotonesAñadirAve(){
-        mostrandoMenuVender = false;
-        mostrandoMenuAnimal = false;
-        mostrandoMenuHabitat = false;
-        mostrandoMenuCama = false;
-        mostrandoMenuPescera = false;
-        mostrandoMenuJaula = true;
-
-        panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(1, 1, 0, 1));
-
-        // Verificar compatibilidad con el hábitat
-        if (this.habitat.esCompatible(new Ave(""))) {
-            btnAñadirAve.setText("Ave: " + tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()));
-            panelMenu.add(btnAñadirAve);
-        }
-
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    private void mostrarMenuVender() {
-        ocultarTodosLosBotones();
-        mostrandoMenuVender = true;
-
-        panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(1, 1));
-        panelMenu.add(btnVender);
-
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    /**
-     * Oculta todos los botones y limpia el panel de menú.
-     */
-    private void ocultarTodosLosBotones() {
-        mostrandoMenuAnimal = false;
-        mostrandoMenuHabitat= false;
-        mostrandoMenuCama= false;
-        mostrandoMenuPescera = false;
-        mostrandoMenuJaula = false;
-        mostrandoMenuVender= false;
-        panelMenu.removeAll();
-        //repintar el animal y los iconos;
-        panelMenu.revalidate();
-        panelMenu.repaint();
     }
 
     /**
      * Desmantela el hábitat actual y reembolsa su valor al jugador.
      * Solo se puede usar si el hábitat está vacío.
      */
-    private void desmantelarHabitat(){ //SOLO SE PUEDE USAR EN UN HABITAT VACIO
+    public void desmantelarHabitat() {
+        if (this.habitat == null || !this.habitat.estaVacio()) return;
+
         int valorReembolso = 0;
         if (habitat instanceof Jaula) valorReembolso = PRECIO_JAULA;
-        else if (habitat instanceof Pecera) valorReembolso= PRECIO_PECERA;
-        else if (habitat instanceof Cama) valorReembolso= PRECIO_CAMA;
+        else if (habitat instanceof Pecera) valorReembolso = PRECIO_PECERA;
+        else if (habitat instanceof Cama) valorReembolso = PRECIO_CAMA;
 
         tiendaLogica.reembolso(valorReembolso);
         tiendaLogica.getEspaciosActivos().remove(habitat);
         this.habitat = null;
-        if(actualizarP !=null)actualizarP.run();
-        System.out.println("Hábitat desmantelado desde la Casilla. Reembolso: $" + valorReembolso);
+        if (actualizarP != null) actualizarP.run();
+        System.out.println("Hábitat desmantelado. Reembolso: $" + valorReembolso);
         ocultarTodosLosBotones();
+    }
+
+    /**
+     * Vende el animal al comprador actual.
+     */
+    public void venderAnimal() {
+        if (!tieneAnimal()) return;
+
+        Comprador cliente = tiendaLogica.getCompradoractual();
+        if (cliente != null) {
+            boolean exito = tiendaLogica.venderMascotaACliente(this.habitat, cliente);
+            if (exito) {
+                tiendaLogica.setCompradoractual(null);
+                if (actualizarP != null) actualizarP.run();
+            } else {
+                System.out.println("No es la especie que busca, o está en muy mal estado.");
+            }
+        } else {
+            System.out.println("No hay ningún cliente esperando en el mostrador.");
+        }
+        ocultarTodosLosBotones();
+    }
+
+    /**
+     * Ejecuta la acción correspondiente al clic del mouse en la casilla.
+     * @param e Evento del mouse
+     */
+    @Override
+    public void ejecutarAccion(MouseEvent e) {
+        mouseHandler.ejecutarAccion(e);
+    }
+
+    /**
+     * Obtiene el texto del tooltip que muestra la información del animal.
+     * @param event Evento del mouse
+     * @return Texto HTML con la información del animal
+     */
+    @Override
+    public String getToolTipText(MouseEvent event) {
+        if (noTieneHabitat()) return "Vacio";
+        if (habitat.estaVacio()) return "Animal Pendiente";
+        Animal mascota = habitat.getResidente();
+        return "<html><b>" + mascota.getNombre() + "</b><hr>" +
+                "Felicidad: " + mascota.getNivel(Estadistica.FELICIDAD) + "/100<br>" +
+                "Saciedad: " + mascota.getNivel(Estadistica.SACIEDAD) + "/100<br>" +
+                "Higiene: " + mascota.getNivel(Estadistica.HIGIENE) + "/100<br>" +
+                "Salud: " + mascota.getNivel(Estadistica.SALUD) + "/100</html>";
+    }
+
+    /**
+     * Notifica que las estadísticas del animal han cambiado.
+     * Actualiza la interfaz gráfica.
+     * @param animal El animal que cambió
+     */
+    @Override
+    public void onEstadisticasCambiadas(Animal animal) {
+        this.repaint();
+    }
+
+    /**
+     * Elimina el observer del animal residente.
+     */
+    public void removerObserver() {
+        if (tieneAnimal()) {
+            habitat.getResidente().removeObserver(this);
+        }
+    }
+
+    /**
+     * Obtiene el hábitat de la casilla.
+     * @return El hábitat actual
+     */
+    public Habitat getHabitat() {
+        return habitat;
+    }
+
+    /**
+     * Establece el hábitat de la casilla.
+     * @param habitat El nuevo hábitat
+     */
+    public void setHabitat(Habitat habitat) {
+        this.habitat = habitat;
+        if (this.habitat != null && !this.habitat.estaVacio()) {
+            this.habitat.getResidente().addObserver(this);
+        }
     }
 
     /**
@@ -502,162 +319,74 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
     }
 
     /**
-     * Ejecuta la acción correspondiente al clic del mouse en la casilla.
-     * @param e Evento del mouse
+     * Obtiene la tienda lógica.
+     * @return La tienda
      */
-    @Override
-    public void ejecutarAccion(MouseEvent e) {
-
-        if (SwingUtilities.isRightMouseButton(e)) {
-            if(mostrandoMenuHabitat || mostrandoMenuAnimal || mostrandoMenuVender ||mostrandoMenuCama || mostrandoMenuJaula || mostrandoMenuPescera) ocultarTodosLosBotones(); //OCULTAR BOTONES
-            else if (this.habitat != null && this.habitat.estaVacio()) desmantelarHabitat();//REEMBOLSAR HABITAT
-            else if (tieneAnimal() && !mostrandoMenuVender) mostrarMenuVender();
-
-
-            return;
-
-        }
-
-
-        if (SwingUtilities.isLeftMouseButton(e)) {
-            if (noTieneHabitat()){
-                //opcion de botones para comprar habitat
-                mostrarBotonesHabitat();
-            }
-            else if (this.habitat.estaVacio()){ //HAY HABITAT PERO NO HAY ANIMAL
-                    if (habitat instanceof Cama) mostrarBotonesAñadirCama();
-                    else if (habitat instanceof Pecera) mostrarBotonesAñadirPez();
-                    else if (habitat instanceof Jaula) mostrarBotonesAñadirAve();
-            }
-            else{ //HAY ANIMAL Y HABITAT
-                mostrarBotonesAnimal();
-            }
-        }
-
+    public Tienda getTiendaLogica() {
+        return tiendaLogica;
     }
 
     /**
-     * Obtiene el texto del tooltip que muestra la información del animal.
-     * @param event Evento del mouse
-     * @return Texto HTML con la información del animal
+     * Obtiene el Runnable de actualización.
+     * @return El Runnable
      */
-    @Override
-    public String getToolTipText(MouseEvent event){//MENSAJE CUANDO EL MOUSE PASA POR ENCIMA
-        if (noTieneHabitat()) return "Vacio";
-        if (habitat.estaVacio()) return "Animal Pendiente";
-        Animal mascota = habitat.getResidente();
-        return "<html>" +
-                "<b>" + mascota.getNombre() + "</b><br>" +
-                "<hr>" + // Una línea divisoria
-                "Felicidad: " + mascota.getNivel(Estadistica.FELICIDAD) + "/100<br>" +
-                "Saciedad: " + mascota.getNivel(Estadistica.SACIEDAD) + "/100<br>" +
-                "Higiene: " + mascota.getNivel(Estadistica.HIGIENE) + "/100<br>" +
-                "Salud: " + mascota.getNivel(Estadistica.SALUD) + "/100" +
-                "</html>";
-
+    public Runnable getActualizarP() {
+        return actualizarP;
     }
 
     /**
-     * Dibuja el contenido de la casilla.
-     * @param g Objeto Graphics para dibujar
+     * Obtiene el icono de alerta de hambre.
+     * @return ImageIcon de alerta de hambre
      */
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (noTieneHabitat()) {
-            g.setColor(Color.LIGHT_GRAY);
-            g.drawString("[VACIO]", 10, 20);
-
-        }
-        else if (habitat.estaVacio()) {
-            if (habitat instanceof Jaula){
-                g.drawImage(GJaula.getImage(), 0,0, getWidth(), getHeight(),null);
-            }
-            else if (habitat instanceof Cama){
-                g.drawImage(GCama.getImage(), 0,0, getWidth(), getHeight(),null);
-            }
-            else if (habitat instanceof Pecera){
-                g.drawImage(GPecera.getImage(), 0,0, getWidth(), getHeight(),null);
-            }
-
-
-        } else if (!mostrandoMenuAnimal && tieneAnimal()) {
-            Animal mascota = habitat.getResidente();
-            g.setColor(Color.BLACK);
-            if (mascota instanceof Perro){
-                g.drawImage(GPerro.getImage(),0,0, getWidth(),getHeight(),null );
-                g.drawImage(GCama.getImage(), 0,0, getWidth(), getHeight(),null);
-            } else if (mascota instanceof Gato) {
-                g.drawImage(GGato.getImage(),0,0, getWidth(),getHeight(),null );
-                g.drawImage(GCama.getImage(), 0,0, getWidth(), getHeight(),null);
-            }
-            else if (mascota instanceof Ave){
-                g.drawImage(GAve.getImage(),0,0, getWidth(),getHeight(),null );
-                g.drawImage(GJaula.getImage(), 0,0, getWidth(), getHeight(),null);
-            } else if (mascota instanceof Pez) {
-                g.drawImage(GPecera.getImage(),0,0, getWidth(),getHeight(),null );
-                g.drawImage(GPez.getImage(), 0,0, getWidth(), getHeight(),null);
-
-            }
-
-            boolean[] estados = mascota.getTodosLosEstados();
-            int yIcono = 40;
-
-            //  ALERTA DE SALUD
-            if (!estados[3]){
-                g.drawImage(alertaEnfermo.getImage(), 10 ,yIcono, null);
-                yIcono +=20;
-            }
-
-            // ALERTA DE HAMBRE
-            if (!estados[1]) {
-
-                g.drawImage(alertaHambre.getImage(), 10, yIcono, null);
-
-                yIcono += 20;
-            }
-
-            // ALERTA DE HIGIENE
-            if (!estados[2]) {
-                g.drawImage(alertaSucio.getImage(), 10, yIcono, null);
-
-                yIcono += 20;
-            }
-
-            // ALERTA DE FELICIDAD
-            if (!estados[0]) {
-                g.drawImage(alertaTriste.getImage(), 10, yIcono, null);
-
-
-            }
-        }
+    public ImageIcon getAlertaHambre() {
+        return alertaHambre;
     }
 
     /**
-     * Notifica que las estadísticas del animal han cambiado.
-     * Actualiza la interfaz gráfica.
-     * @param animal El animal que cambió
+     * Obtiene el icono de alerta de suciedad.
+     * @return ImageIcon de alerta de suciedad
      */
-    @Override
-    public void onEstadisticasCambiadas(Animal animal) {
-        this.repaint();
+    public ImageIcon getAlertaSucio() {
+        return alertaSucio;
     }
 
     /**
-     * Elimina el observer del animal residente.
+     * Obtiene el icono de alerta de tristeza.
+     * @return ImageIcon de alerta de tristeza
      */
-    public void removerObserver() {
-        Animal mascota= habitat.getResidente();
-        if (mascota != null) {
-            mascota.removeObserver(this);
-        }
+    public ImageIcon getAlertaTriste() {
+        return alertaTriste;
     }
 
     /**
-     * Obtiene el hábitat de la casilla.
-     * @return El hábitat actual
+     * Obtiene el icono de alerta de enfermedad.
+     * @return ImageIcon de alerta de enfermedad
      */
-    public Habitat getHabitat() {
-        return habitat;
+    public ImageIcon getAlertaEnfermo() {
+        return alertaEnfermo;
+    }
+
+    /**
+     * Obtiene el precio de la jaula.
+     * @return Precio de la jaula
+     */
+    public int getPrecioJaula() {
+        return PRECIO_JAULA;
+    }
+
+    /**
+     * Obtiene el precio de la cama.
+     * @return Precio de la cama
+     */
+    public int getPrecioCama() {
+        return PRECIO_CAMA;
+    }
+
+    /**
+     * Obtiene el precio de la pecera.
+     * @return Precio de la pecera
+     */
+    public int getPrecioPecera() {
+        return PRECIO_PECERA;
     }
 }
