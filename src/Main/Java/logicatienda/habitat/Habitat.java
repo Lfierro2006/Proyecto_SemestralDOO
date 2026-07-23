@@ -45,7 +45,7 @@ public abstract class Habitat {
      * @return true si se alojó correctamente, false si ya estaba ocupado
      */
     public boolean alojarAnimal(Animal nuevaMascota) {
-        if (this.estaVacio()) {
+        if (this.estaVacio() && this.esCompatible(nuevaMascota)) {
             this.residente = nuevaMascota;
             return true;
         }
@@ -59,5 +59,13 @@ public abstract class Habitat {
     public void liberarHabitat() {
         this.residente = null;
     }
+
+    /**
+     * Verifica si el animal es compatible con este hábitat.
+     * Las subclases deben implementar esta validación.
+     * @param animal El animal a verificar
+     * @return true si el animal puede vivir en este hábitat, false en caso contrario
+     */
+    public abstract boolean esCompatible(Animal animal);
 
 }

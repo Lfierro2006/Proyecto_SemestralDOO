@@ -77,7 +77,8 @@ public class Tienda {
 
     /**
      * Compra un animal y lo aloja en un hábitat específico.
-     * Verifica que el hábitat pertenezca a la tienda, que esté vacío y que haya dinero suficiente.
+     * Verifica que el hábitat pertenezca a la tienda, que esté vacío,
+     * que el animal sea compatible con el hábitat y que haya dinero suficiente.
      * @param nuevaMascota El animal a comprar
      * @param destino El hábitat donde se alojará el animal
      * @param costo Costo del animal
@@ -95,13 +96,19 @@ public class Tienda {
             return false;
         }
 
+        if (!destino.esCompatible(nuevaMascota)) {
+            System.out.println("Operación fallida: Este hábitat no es compatible con este tipo de animal.");
+            return false;
+        }
+
         if (this.usuario.getDinero() < costo) {
             System.out.println("Operación fallida: Presupuesto insuficiente para la mascota.");
             return false;
         }
+
         this.usuario.quitarDinero(costo);
         destino.alojarAnimal(nuevaMascota);
-        System.out.println("El animal ha sido ccomprado corretamente.");
+        System.out.println("El animal ha sido comprado correctamente.");
         return true;
     }
 

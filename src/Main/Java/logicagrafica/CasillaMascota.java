@@ -276,12 +276,37 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
         ocultarTodosLosBotones(); // Redibuja la casilla con su nuevo estado
     }
-    private void intentarComprarAnimal (Animal nuevoAnimal, int costo){
+
+    /**
+     * Intenta comprar un animal y alojarlo en el hábitat de la casilla.
+     * Verifica que el hábitat exista, esté vacío y sea compatible con el animal.
+     * @param nuevoAnimal El animal a comprar
+     * @param costo Costo del animal
+     */
+    private void intentarComprarAnimal(Animal nuevoAnimal, int costo) {
+        if (this.habitat == null) {
+            System.out.println("Error: No hay hábitat en esta casilla.");
+            ocultarTodosLosBotones();
+            return;
+        }
+
+        if (!this.habitat.estaVacio()) {
+            System.out.println("Error: El hábitat ya está ocupado.");
+            ocultarTodosLosBotones();
+            return;
+        }
+        if (!this.habitat.esCompatible(nuevoAnimal)) {
+            System.out.println("Error: Este hábitat no es compatible con este tipo de animal.");
+            ocultarTodosLosBotones();
+            return;
+        }
+
         boolean compraExitosa = tiendaLogica.comprarAnimal(nuevoAnimal, this.habitat, costo);
-        if(compraExitosa){
-            nuevoAnimal.addObserver(this); //Observer para el patron
-            System.out.println("Animal comprado y alojado con exito");
-            if (this.actualizarP!= null) actualizarP.run();
+
+        if (compraExitosa) {
+            nuevoAnimal.addObserver(this);
+            System.out.println("Animal comprado y alojado con éxito");
+            if (this.actualizarP != null) actualizarP.run();
         }
 
         ocultarTodosLosBotones();
@@ -336,23 +361,29 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
     /**
      * Muestra los botones para añadir animales a una cama (perros y gatos).
+     * Solo muestra animales compatibles con el hábitat.
      */
     private void mostrarBotonesAñadirCama(){
-        mostrandoMenuVender= false;
-        mostrandoMenuAnimal= false;
+        mostrandoMenuVender = false;
+        mostrandoMenuAnimal = false;
         mostrandoMenuHabitat = false;
-        mostrandoMenuCama= true;
+        mostrandoMenuCama = true;
         mostrandoMenuPescera = false;
         mostrandoMenuJaula = false;
 
-        btnAñadirPerro.setText("Perro: " + tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()));
-        btnAñadirGato.setText("Gato: " + tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex()));
-
         panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(2, 1 ,0, 1));
+        panelMenu.setLayout(new GridLayout(0, 1, 0, 1));
 
-        panelMenu.add(btnAñadirPerro);
-        panelMenu.add(btnAñadirGato);
+        // Verificar compatibilidad con el hábitat
+        if (this.habitat.esCompatible(new Perro(""))) {
+            btnAñadirPerro.setText("Perro: " + tiendaLogica.getUsuario().getCantItem(Item.PERRO.getIndex()));
+            panelMenu.add(btnAñadirPerro);
+        }
+
+        if (this.habitat.esCompatible(new Gato(""))) {
+            btnAñadirGato.setText("Gato: " + tiendaLogica.getUsuario().getCantItem(Item.GATO.getIndex()));
+            panelMenu.add(btnAñadirGato);
+        }
 
         panelMenu.revalidate();
         panelMenu.repaint();
@@ -360,22 +391,24 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
     /**
      * Muestra los botones para añadir animales a una pecera (solo peces).
+     * Solo muestra animales compatibles con el hábitat.
      */
     private void mostrarBotonesAñadirPez(){
-        mostrandoMenuVender= false;
-        mostrandoMenuAnimal= false;
+        mostrandoMenuVender = false;
+        mostrandoMenuAnimal = false;
         mostrandoMenuHabitat = false;
-        mostrandoMenuCama= false;
+        mostrandoMenuCama = false;
         mostrandoMenuPescera = true;
         mostrandoMenuJaula = false;
 
-        btnAñadirPez.setText("Pez: " + tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()));
-
         panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(1, 1 ,0, 1));
+        panelMenu.setLayout(new GridLayout(1, 1, 0, 1));
 
-        panelMenu.add(btnAñadirPez);
-
+        // Verificar compatibilidad con el hábitat
+        if (this.habitat.esCompatible(new Pez(""))) {
+            btnAñadirPez.setText("Pez: " + tiendaLogica.getUsuario().getCantItem(Item.PEZ.getIndex()));
+            panelMenu.add(btnAñadirPez);
+        }
 
         panelMenu.revalidate();
         panelMenu.repaint();
@@ -383,26 +416,29 @@ public class CasillaMascota extends PanelTMAnimal implements AnimalObserver {
 
     /**
      * Muestra los botones para añadir animales a una jaula (solo aves).
+     * Solo muestra animales compatibles con el hábitat.
      */
     private void mostrarBotonesAñadirAve(){
-        mostrandoMenuVender= false;
-        mostrandoMenuAnimal= false;
+        mostrandoMenuVender = false;
+        mostrandoMenuAnimal = false;
         mostrandoMenuHabitat = false;
-        mostrandoMenuCama= false;
+        mostrandoMenuCama = false;
         mostrandoMenuPescera = false;
         mostrandoMenuJaula = true;
 
-        btnAñadirAve.setText("Ave: " + tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()));
-
         panelMenu.removeAll();
-        panelMenu.setLayout(new GridLayout(1, 1 ,0, 1));
+        panelMenu.setLayout(new GridLayout(1, 1, 0, 1));
 
-        panelMenu.add(btnAñadirAve);
-
+        // Verificar compatibilidad con el hábitat
+        if (this.habitat.esCompatible(new Ave(""))) {
+            btnAñadirAve.setText("Ave: " + tiendaLogica.getUsuario().getCantItem(Item.AVE.getIndex()));
+            panelMenu.add(btnAñadirAve);
+        }
 
         panelMenu.revalidate();
         panelMenu.repaint();
     }
+
     private void mostrarMenuVender() {
         ocultarTodosLosBotones();
         mostrandoMenuVender = true;
